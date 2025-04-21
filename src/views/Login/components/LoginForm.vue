@@ -34,6 +34,29 @@ const rules = {
   password: [required()]
 }
 
+// 定义租户选项的响应式变量
+const tenantOptions = ref([{}])
+
+// 模拟延迟加载数据租户数据
+const loadTenantOptions = () => {
+  const options = [
+    {
+      label: '租户1',
+      value: 'tenant1'
+    },
+    {
+      label: '租户2',
+      value: 'tenant2'
+    }
+  ]
+  tenantOptions.value = options
+}
+
+// 组件挂载时加载租户数据
+onMounted(() => {
+  loadTenantOptions()
+})
+
 const schema = reactive<FormSchema[]>([
   {
     field: 'title',
@@ -49,21 +72,31 @@ const schema = reactive<FormSchema[]>([
     }
   },
   {
+    field: 'tenant',
+    label: t('login.tenant'),
+    component: 'Select',
+    colProps: {
+      span: 24
+    },
+    componentProps: {
+      placeholder: t('login.tenantPlaceholder'),
+      options: tenantOptions
+    }
+  },
+  {
     field: 'username',
     label: t('login.username'),
-    // value: 'admin',
     component: 'Input',
     colProps: {
       span: 24
     },
     componentProps: {
-      placeholder: 'admin or test'
+      placeholder: t('login.usernamePlaceholder')
     }
   },
   {
     field: 'password',
     label: t('login.password'),
-    // value: 'admin',
     component: 'InputPassword',
     colProps: {
       span: 24
@@ -72,7 +105,7 @@ const schema = reactive<FormSchema[]>([
       style: {
         width: '100%'
       },
-      placeholder: 'admin or test',
+      placeholder: t('login.passwordPlaceholder'),
       // 按下enter键触发登录
       onKeydown: (_e: any) => {
         if (_e.key === 'Enter') {

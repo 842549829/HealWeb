@@ -109,6 +109,8 @@ export default {
   login: {
     welcome: 'Welcome to the system',
     message: 'Backstage management system',
+    tenant: 'Tenant',
+    tenantPlaceholder: 'Please input tenant',
     username: 'Username',
     password: 'Password',
     register: 'Register',

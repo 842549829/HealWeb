@@ -12,10 +12,11 @@ export const useRenderCheckbox = () => {
     const Com = (
       item.component === ComponentNameEnum.CHECKBOX_GROUP ? ElCheckbox : ElCheckboxButton
     ) as ReturnType<typeof defineComponent>
-    return componentProps?.options?.map((option) => {
+    return componentProps?.options?.map((option, index) => {
       const { ...other } = option
       return (
         <Com
+          key={option.id || `renderCheckboxOptions${index}`} // 添加唯一的 key 属性
           {...other}
           disabled={option[disabledAlias || 'disabled']}
           label={option[labelAlias || 'label']}

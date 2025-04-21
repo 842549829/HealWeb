@@ -40,8 +40,8 @@ export const useRenderSelect = () => {
 
     return (
       <ElOption
-        {...option}
         key={option[keyAlias || 'key']}
+        {...option}
         label={option[labelAlias || 'label']}
         value={option[valueAlias || 'value']}
       >
