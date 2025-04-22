@@ -1,11 +1,13 @@
 export interface UserLoginType {
   username: string
   password: string
+  remember: boolean
+  tenantId?: string
 }
 
 export interface UserType {
-  username: string
-  password: string
-  role: string
-  roleId: string
+  accessToken: string
+  refreshToken: string
+  expiresIn: number
+  tokenType: string
 }
