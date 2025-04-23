@@ -15,7 +15,7 @@ enum Api {
 // 登录
 export class LoginHttpRequest {
   // 登录
-  public loginAsync = (input: UserLoginType) => requestNew.post<UserType>(Api.LOGIN_URL, input)
+  public loginAsync = (input: UserLoginType) => requestNew.post<UserType>('/mock/user/login', input)
 
   // 获取权限
   public getPermissionAsync = () => requestNew.get<AppCustomRouteRecordRaw[]>(Api.PERMISSION_URL)

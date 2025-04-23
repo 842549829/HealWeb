@@ -9,7 +9,7 @@ import { useAppStore } from '@/store/modules/app'
 import { usePermissionStore } from '@/store/modules/permission'
 import { useRouter } from 'vue-router'
 import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
-import { UserLoginType } from '@/api/login/types'
+import { TenantOption, UserLoginType } from '@/api/login/types'
 import { useValidator } from '@/hooks/web/useValidator'
 import { Icon } from '@/components/Icon'
 import { useUserStore } from '@/store/modules/user'
@@ -38,7 +38,7 @@ const rules = {
 }
 
 // 定义租户选项的响应式变量
-const tenantOptions = ref([{}])
+const tenantOptions = ref<TenantOption[]>([])
 
 // 模拟延迟加载数据租户数据
 const loadTenantOptions = () => {
@@ -75,7 +75,7 @@ const schema = reactive<FormSchema[]>([
     }
   },
   {
-    field: 'tenant',
+    field: 'tenantId',
     label: t('login.tenant'),
     component: 'Select',
     colProps: {

@@ -76,6 +76,17 @@ export const constantRouterMap: AppRouteRecordRaw[] = [
       title: '404',
       noTagsView: true
     }
+  },
+  {
+    // 首页路由
+    path: '/home',
+    component: () => import('@/views/Dashboard/Workplace.vue'),
+    name: 'Home',
+    meta: {
+      hidden: true,
+      title: 'Home',
+      noTagsView: true
+    }
   }
 ]
 
