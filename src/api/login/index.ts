@@ -1,6 +1,6 @@
 import request from '@/axios'
 import type { UserLoginType, UserType } from './types'
-import { authorizationHttpRequest as requestNew } from '@/http/index'
+import { unAuthorizationHttpRequest as requestNew } from '@/http/index'
 
 interface RoleParams {
   roleName: string
@@ -15,7 +15,7 @@ enum Api {
 // 登录
 export class LoginHttpRequest {
   // 登录
-  public loginAsync = (input: UserLoginType) => requestNew.post<UserType>('/mock/user/login', input)
+  public loginAsync = (input: UserLoginType) => requestNew.post<UserType>(Api.LOGIN_URL, input)
 
   // 获取权限
   public getPermissionAsync = () => requestNew.get<AppCustomRouteRecordRaw[]>(Api.PERMISSION_URL)

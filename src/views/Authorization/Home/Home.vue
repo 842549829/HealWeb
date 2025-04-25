@@ -6,6 +6,8 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ThemeSwitch } from '@/components/ThemeSwitch'
 import { LocaleDropdown } from '@/components/LocaleDropdown'
+import { UserInfo } from '@/components/UserInfo'
+import { getListAsync } from '@/api/menu/index'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -36,7 +38,8 @@ const filteredCardList = computed(() => {
   return cardList.value.filter((card) => card.title.toLowerCase().includes(lowerCaseSearchText))
 })
 
-const handleCardClick = (path: string) => {
+const handleCardClick = async (path: string) => {
+  await getListAsync('sdsss')
   if (path.startsWith('http')) {
     window.open(path, '_blank')
   } else {
@@ -52,6 +55,7 @@ const handleCardClick = (path: string) => {
       <div class="flex justify-end items-center space-x-10px">
         <ThemeSwitch />
         <LocaleDropdown class="lt-xl:text-white dark:text-white" />
+        <UserInfo />
       </div>
     </div>
 

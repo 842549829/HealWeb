@@ -1,4 +1,5 @@
-import { HttpRequestOptions, HttpRequestBase } from './httpRequest'
+import { HttpRequestBase } from './httpRequest'
+import { HttpRequestOptions } from './httpRequestOptions'
 import type { HttpRequestConfig } from './type'
 import { useStorage } from '@/hooks/web/useStorage'
 

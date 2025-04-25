@@ -14,6 +14,7 @@ import { useValidator } from '@/hooks/web/useValidator'
 import { Icon } from '@/components/Icon'
 import { useUserStore } from '@/store/modules/user'
 import { BaseButton } from '@/components/Button'
+import { parseJwt, type Jwt } from '@/utils/token'
 
 const { required } = useValidator()
 
@@ -87,7 +88,7 @@ const schema = reactive<FormSchema[]>([
     }
   },
   {
-    field: 'username',
+    field: 'userName',
     label: t('login.username'),
     component: 'Input',
     colProps: {
@@ -234,8 +235,8 @@ const remember = ref(userStore.getRememberMe)
 const initLoginInfo = () => {
   const loginInfo = userStore.getLoginInfo
   if (loginInfo) {
-    const { username, password } = loginInfo
-    setValues({ username, password })
+    const { userName, password } = loginInfo
+    setValues({ userName, password })
   }
 }
 onMounted(() => {
@@ -270,34 +271,42 @@ const signIn = async () => {
     if (isValid) {
       loading.value = true
       const formData = await getFormData<UserLoginType>()
-
+      const userLoginType: UserLoginType = {
+        userName: formData.userName,
+        password: formData.password,
+        remember: unref(remember),
+        tenantId: formData.tenantId
+      }
       try {
-        const res = await loginHttpRequest.loginAsync(formData)
+        const res = await loginHttpRequest.loginAsync(userLoginType)
 
         if (res) {
           // 是否记住我
           if (unref(remember)) {
-            userStore.setLoginInfo({
-              username: formData.username,
-              password: formData.password,
-              remember: unref(remember)
-            })
+            userStore.setLoginInfo(userLoginType)
           } else {
             userStore.setLoginInfo(undefined)
           }
           userStore.setRememberMe(unref(remember))
+
+          const jwt: Jwt = parseJwt(res.accessToken)
+          res.userId = jwt.payload.sub
+          res.username = jwt.payload.given_name
           userStore.setUserInfo(res)
-          // 是否使用动态路由
-          if (appStore.getDynamicRouter) {
-            getRole()
-          } else {
-            await permissionStore.generateRoutes('static').catch(() => {})
-            permissionStore.getAddRouters.forEach((route) => {
-              addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
-            })
-            permissionStore.setIsAddRouters(true)
-            push({ path: redirect.value || permissionStore.addRouters[0].path })
-          }
+
+          push('/home')
+
+          // // 是否使用动态路由
+          // if (appStore.getDynamicRouter) {
+          //   getRole()
+          // } else {
+          //   await permissionStore.generateRoutes('static').catch(() => {})
+          //   permissionStore.getAddRouters.forEach((route) => {
+          //     addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
+          //   })
+          //   permissionStore.setIsAddRouters(true)
+          //   push({ path: redirect.value || permissionStore.addRouters[0].path })
+          // }
         }
       } finally {
         loading.value = false
