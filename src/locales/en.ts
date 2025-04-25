@@ -582,5 +582,10 @@ export default {
   avatarsDemo: {
     title:
       'Avatar component for avatar list, secondary packaging based on element plus Avatar component'
+  },
+  home: {
+    welcome: 'Welcome',
+    selectModule: 'Please select the function module you want to access',
+    searchPlaceholder: 'Please enter search content'
   }
 }

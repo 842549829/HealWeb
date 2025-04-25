@@ -570,5 +570,10 @@ export default {
   },
   avatarsDemo: {
     title: '头像列表组件，基于element-plus的Avatar组件二次封装'
+  },
+  home: {
+    welcome: '欢迎登录',
+    selectModule: '请选择您要访问的功能模块',
+    searchPlaceholder: '请输入搜索内容'
   }
 }

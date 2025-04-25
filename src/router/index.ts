@@ -80,7 +80,7 @@ export const constantRouterMap: AppRouteRecordRaw[] = [
   {
     // 首页路由
     path: '/home',
-    component: () => import('@/views/Dashboard/Workplace.vue'),
+    component: () => import('@/views/Authorization/Home/Home.vue'),
     name: 'Home',
     meta: {
       hidden: true,
