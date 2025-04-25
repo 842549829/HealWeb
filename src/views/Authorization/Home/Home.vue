@@ -10,8 +10,8 @@ const { t } = useI18n()
 const router = useRouter()
 const searchText = ref('')
 const cardList = ref([
-  { id: 1, title: '系统管理', path: '/dashboard/analysis' },
-  { id: 2, title: '用户管理', path: '/dashboard/analysis' },
+  { id: 1, title: '系统管理', path: 'https://www.baidu.com' },
+  { id: 2, title: '用户管理', path: 'https://www.baidu.com' },
   { id: 3, title: '角色管理', path: '/dashboard/analysis' },
   { id: 4, title: '权限管理', path: '/dashboard/analysis' },
   { id: 5, title: '菜单管理', path: '/dashboard/analysis' },
@@ -23,7 +23,11 @@ const cardList = ref([
 ])
 
 const handleCardClick = (path: string) => {
-  router.push(path)
+  if (path.startsWith('http')) {
+    window.open(path, '_blank')
+  } else {
+    router.push(path)
+  }
 }
 </script>
 
