@@ -5,10 +5,10 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { ElCheckbox, ElLink } from 'element-plus'
 import { useForm } from '@/hooks/web/useForm'
 import { LoginHttpRequest } from '@/api/login'
-import { useAppStore } from '@/store/modules/app'
-import { usePermissionStore } from '@/store/modules/permission'
+//import { useAppStore } from '@/store/modules/app'
+//import { usePermissionStore } from '@/store/modules/permission'
 import { useRouter } from 'vue-router'
-import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
+import type { RouteLocationNormalizedLoaded /*RouteRecordRaw*/ } from 'vue-router'
 import { TenantOption, UserLoginType } from '@/api/login/types'
 import { useValidator } from '@/hooks/web/useValidator'
 import { Icon } from '@/components/Icon'
@@ -20,13 +20,13 @@ const { required } = useValidator()
 
 const emit = defineEmits(['to-register'])
 
-const appStore = useAppStore()
+//const appStore = useAppStore()
 
 const userStore = useUserStore()
 
-const permissionStore = usePermissionStore()
+//const permissionStore = usePermissionStore()
 
-const { currentRoute, addRoute, push } = useRouter()
+const { currentRoute, /*addRoute,*/ push } = useRouter()
 
 // 创建 LoginHttpRequest 实例
 const loginHttpRequest = new LoginHttpRequest()
@@ -316,25 +316,25 @@ const signIn = async () => {
 }
 
 // 获取角色信息
-const getRole = async () => {
-  const res =
-    appStore.getDynamicRouter && appStore.getServerDynamicRouter
-      ? await loginHttpRequest.getPermissionAsync()
-      : []
-  if (res) {
-    const routers = res || []
-    userStore.setRoleRouters(routers)
-    appStore.getDynamicRouter && appStore.getServerDynamicRouter
-      ? await permissionStore.generateRoutes('server', routers).catch(() => {})
-      : await permissionStore.generateRoutes('frontEnd', routers).catch(() => {})
+// const getRole = async () => {
+//   const res =
+//     appStore.getDynamicRouter && appStore.getServerDynamicRouter
+//       ? await loginHttpRequest.getPermissionAsync()
+//       : []
+//   if (res) {
+//     const routers = res || []
+//     userStore.setRoleRouters(routers)
+//     appStore.getDynamicRouter && appStore.getServerDynamicRouter
+//       ? await permissionStore.generateRoutes('server', routers).catch(() => {})
+//       : await permissionStore.generateRoutes('frontEnd', routers).catch(() => {})
 
-    permissionStore.getAddRouters.forEach((route) => {
-      addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
-    })
-    permissionStore.setIsAddRouters(true)
-    push({ path: redirect.value || permissionStore.addRouters[0].path })
-  }
-}
+//     permissionStore.getAddRouters.forEach((route) => {
+//       addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
+//     })
+//     permissionStore.setIsAddRouters(true)
+//     push({ path: redirect.value || permissionStore.addRouters[0].path })
+//   }
+// }
 
 // 去注册页面
 const toRegister = () => {
