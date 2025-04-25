@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ElCard, ElRow, ElCol, ElInput } from 'element-plus'
-import { ref } from 'vue'
+import { Icon } from '@/components/Icon'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ThemeSwitch } from '@/components/ThemeSwitch'
@@ -9,7 +10,13 @@ import { LocaleDropdown } from '@/components/LocaleDropdown'
 const { t } = useI18n()
 const router = useRouter()
 const searchText = ref('')
-const cardList = ref([
+interface Card {
+  id: number
+  title: string
+  path: string
+}
+
+const cardList = ref<Card[]>([
   { id: 1, title: '系统管理', path: 'https://www.baidu.com' },
   { id: 2, title: '用户管理', path: 'https://www.baidu.com' },
   { id: 3, title: '角色管理', path: '/dashboard/analysis' },
@@ -21,6 +28,13 @@ const cardList = ref([
   { id: 9, title: '参数设置', path: '/dashboard/analysis' },
   { id: 10, title: '通知公告', path: '/dashboard/analysis' }
 ])
+
+// 计算属性：过滤后的卡片列表
+const filteredCardList = computed(() => {
+  if (!searchText.value) return cardList.value // 如果搜索框为空，返回完整列表
+  const lowerCaseSearchText = searchText.value.toLowerCase()
+  return cardList.value.filter((card) => card.title.toLowerCase().includes(lowerCaseSearchText))
+})
 
 const handleCardClick = (path: string) => {
   if (path.startsWith('http')) {
@@ -66,21 +80,29 @@ const handleCardClick = (path: string) => {
       </ElRow>
 
       <ElRow class="p-5" :gutter="24">
-        <ElCol
-          v-for="card in cardList"
-          :key="card.id"
-          :xs="12"
-          :sm="8"
-          :md="6"
-          :lg="4.8"
-          class="mb-6"
-        >
-          <ElCard
-            class="w-full h-150px flex items-center justify-center hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:bg-[#409eff]/90 custom-card"
-            @click="handleCardClick(card.path)"
+        <template v-if="filteredCardList?.length">
+          <ElCol
+            v-for="card in filteredCardList"
+            :key="card.id"
+            :xs="12"
+            :sm="8"
+            :md="6"
+            :lg="4.8"
+            class="mb-6"
           >
-            <p class="text-white text-lg">{{ card.title }}</p>
-          </ElCard>
+            <ElCard
+              class="w-full h-150px flex items-center justify-center hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:bg-[#409eff]/90 custom-card"
+              @click="handleCardClick(card.path)"
+            >
+              <p class="text-white text-lg">{{ card.title }}</p>
+            </ElCard>
+          </ElCol>
+        </template>
+        <ElCol v-else :span="24">
+          <div class="flex flex-col items-center justify-center h-[200px] text-gray-400">
+            <Icon icon="mdi:file-outline" :size="128" class="text-[64px] mb-4 text-[#409EFF]/60" />
+            <span class="text-lg">暂无模块权限</span>
+          </div>
         </ElCol>
       </ElRow>
     </div>
