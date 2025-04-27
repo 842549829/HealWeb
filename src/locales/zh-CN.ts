@@ -574,6 +574,7 @@ export default {
   home: {
     welcome: '欢迎登录',
     selectModule: '请选择您要访问的功能模块',
-    searchPlaceholder: '请输入搜索内容'
+    searchPlaceholder: '请输入搜索内容',
+    noAccessModule: '暂无模块权限'
   }
 }

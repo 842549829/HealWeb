@@ -586,6 +586,7 @@ export default {
   home: {
     welcome: 'Welcome',
     selectModule: 'Please select the function module you want to access',
-    searchPlaceholder: 'Please enter search content'
+    searchPlaceholder: 'Please enter search content',
+    noAccessModule: 'No access to the module'
   }
 }

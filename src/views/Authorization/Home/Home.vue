@@ -1,35 +1,53 @@
 <script setup lang="ts">
 import { ElCard, ElRow, ElCol, ElInput } from 'element-plus'
 import { Icon } from '@/components/Icon'
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ThemeSwitch } from '@/components/ThemeSwitch'
 import { LocaleDropdown } from '@/components/LocaleDropdown'
 import { UserInfo } from '@/components/UserInfo'
-import { getListAsync } from '@/api/menu/index'
+import { useAppStore } from '@/store/modules/app'
+import { usePermissionStore } from '@/store/modules/permission'
+import type { ModuleHomeListDto } from '@/api/home/type'
+import { HomeHttpRequest } from '@/api/home/index'
+import { useUserStore } from '@/store/modules/user'
+
+// 创建 HomeHttpRequest 实例
+const homeHttpRequest = new HomeHttpRequest()
+
+const { currentRoute, addRoute, push, removeRoute } = useRouter()
+
+const appStore = useAppStore()
+
+const userStore = useUserStore()
+
+const permissionStore = usePermissionStore()
 
 const { t } = useI18n()
-const router = useRouter()
-const searchText = ref('')
-interface Card {
-  id: number
-  title: string
-  path: string
-}
 
-const cardList = ref<Card[]>([
-  { id: 1, title: '系统管理', path: 'https://www.baidu.com' },
-  { id: 2, title: '用户管理', path: 'https://www.baidu.com' },
-  { id: 3, title: '角色管理', path: '/dashboard/analysis' },
-  { id: 4, title: '权限管理', path: '/dashboard/analysis' },
-  { id: 5, title: '菜单管理', path: '/dashboard/analysis' },
-  { id: 6, title: '部门管理', path: '/dashboard/analysis' },
-  { id: 7, title: '岗位管理', path: '/dashboard/analysis' },
-  { id: 8, title: '字典管理', path: '/dashboard/analysis' },
-  { id: 9, title: '参数设置', path: '/dashboard/analysis' },
-  { id: 10, title: '通知公告', path: '/dashboard/analysis' }
-])
+const searchText = ref('')
+
+const redirect = ref<string>('')
+
+watch(
+  () => currentRoute.value,
+  (route: RouteLocationNormalizedLoaded) => {
+    redirect.value = route?.query?.redirect as string
+  },
+  {
+    immediate: true
+  }
+)
+
+// 挂载时执行
+onMounted(async () => {
+  cardList.value = await homeHttpRequest.getModuleHomeListAsync()
+})
+
+// 模块列表
+const cardList = ref<ModuleHomeListDto[]>([])
 
 // 计算属性：过滤后的卡片列表
 const filteredCardList = computed(() => {
@@ -38,12 +56,56 @@ const filteredCardList = computed(() => {
   return cardList.value.filter((card) => card.title.toLowerCase().includes(lowerCaseSearchText))
 })
 
-const handleCardClick = async (path: string) => {
-  await getListAsync('sdsss')
-  if (path.startsWith('http')) {
-    window.open(path, '_blank')
+const isAppCustomRouteRecordRaw = (item: any): item is AppCustomRouteRecordRaw => {
+  return typeof item === 'object' && item !== null && 'path' in item
+}
+
+// 移除路由
+const removeRoutes = () => {
+  const oldRouters = userStore.getRoleRouters
+  if (oldRouters && Array.isArray(oldRouters)) {
+    for (let i = 0; i < oldRouters.length; i++) {
+      const item = oldRouters[i]
+      if (isAppCustomRouteRecordRaw(item)) {
+        removeRoute(item.path)
+      } else {
+        removeRoute(item)
+      }
+    }
+    userStore.setRoleRouters([])
+    permissionStore.setIsAddRouters(false)
+  }
+}
+
+// 获取菜单信息
+const getMenu = async (moduleName: string) => {
+  removeRoutes()
+  const res =
+    appStore.getDynamicRouter && appStore.getServerDynamicRouter
+      ? await homeHttpRequest.getMenuListAsync(moduleName)
+      : []
+  if (res) {
+    const routers = res || []
+    userStore.setRoleRouters(routers)
+
+    appStore.getDynamicRouter && appStore.getServerDynamicRouter
+      ? await permissionStore.generateRoutes('server', routers).catch(() => {})
+      : await permissionStore.generateRoutes('frontEnd', routers).catch(() => {})
+
+    permissionStore.getAddRouters.forEach((route) => {
+      addRoute(route as RouteRecordRaw) // 动态添加可访问路由表
+    })
+    permissionStore.setIsAddRouters(true)
+    push({ path: redirect.value || permissionStore.addRouters[0].path })
+  }
+}
+
+// 点击卡片事件
+const handleCardClick = async (module: ModuleHomeListDto) => {
+  if (module.path.startsWith('http')) {
+    window.open(module.path, '_blank')
   } else {
-    router.push(path)
+    await getMenu(module.moduleName)
   }
 }
 </script>
@@ -87,7 +149,7 @@ const handleCardClick = async (path: string) => {
         <template v-if="filteredCardList?.length">
           <ElCol
             v-for="card in filteredCardList"
-            :key="card.id"
+            :key="card.path"
             :xs="12"
             :sm="8"
             :md="6"
@@ -96,7 +158,7 @@ const handleCardClick = async (path: string) => {
           >
             <ElCard
               class="w-full h-150px flex items-center justify-center hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:bg-[#409eff]/90 custom-card"
-              @click="handleCardClick(card.path)"
+              @click="handleCardClick(card)"
             >
               <p class="text-white text-lg">{{ card.title }}</p>
             </ElCard>
@@ -105,7 +167,7 @@ const handleCardClick = async (path: string) => {
         <ElCol v-else :span="24">
           <div class="flex flex-col items-center justify-center h-[200px] text-gray-400">
             <Icon icon="mdi:file-outline" :size="128" class="text-[64px] mb-4 text-[#409EFF]/60" />
-            <span class="text-lg">暂无模块权限</span>
+            <span class="text-lg">{{ t('home.noAccessModule') }}</span>
           </div>
         </ElCol>
       </ElRow>

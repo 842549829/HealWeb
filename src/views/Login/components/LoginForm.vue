@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { reactive, ref, watch, onMounted, unref } from 'vue'
+import { reactive, ref, /*watch,*/ onMounted, unref } from 'vue'
 import { Form, FormSchema } from '@/components/Form'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ElCheckbox, ElLink } from 'element-plus'
@@ -8,7 +8,7 @@ import { LoginHttpRequest } from '@/api/login'
 //import { useAppStore } from '@/store/modules/app'
 //import { usePermissionStore } from '@/store/modules/permission'
 import { useRouter } from 'vue-router'
-import type { RouteLocationNormalizedLoaded /*RouteRecordRaw*/ } from 'vue-router'
+//import type { RouteLocationNormalizedLoaded /*RouteRecordRaw*/ } from 'vue-router'
 import { TenantOption, UserLoginType } from '@/api/login/types'
 import { useValidator } from '@/hooks/web/useValidator'
 import { Icon } from '@/components/Icon'
@@ -26,7 +26,7 @@ const userStore = useUserStore()
 
 //const permissionStore = usePermissionStore()
 
-const { currentRoute, /*addRoute,*/ push } = useRouter()
+const { /*currentRoute*,/ /*addRoute,*/ push } = useRouter()
 
 // 创建 LoginHttpRequest 实例
 const loginHttpRequest = new LoginHttpRequest()
@@ -252,17 +252,17 @@ const iconColor = '#999'
 
 const hoverColor = 'var(--el-color-primary)'
 
-const redirect = ref<string>('')
+// const redirect = ref<string>('')
 
-watch(
-  () => currentRoute.value,
-  (route: RouteLocationNormalizedLoaded) => {
-    redirect.value = route?.query?.redirect as string
-  },
-  {
-    immediate: true
-  }
-)
+// watch(
+//   () => currentRoute.value,
+//   (route: RouteLocationNormalizedLoaded) => {
+//     redirect.value = route?.query?.redirect as string
+//   },
+//   {
+//     immediate: true
+//   }
+// )
 
 // 登录
 const signIn = async () => {
