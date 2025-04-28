@@ -3,7 +3,7 @@ import { ModuleHomeListDto } from './type'
 
 // Api地址
 enum Api {
-  MODULE_LIST_URL = 'api/net/basics/permissions',
+  MODULE_LIST_URL = 'api/net/basics/permissions/module-list',
   MENU_LIST_URL = 'api/net/basics/permissions/routes'
 }
 
@@ -14,7 +14,7 @@ export class HomeHttpRequest {
 
   // 获取菜单列表
   public getMenuListAsync = (moduleName: string) => {
-    const url = `${Api.MENU_LIST_URL}${moduleName}`
+    const url = `${Api.MENU_LIST_URL}/${moduleName}`
     return request.get<AppCustomRouteRecordRaw[]>(url)
   }
 }

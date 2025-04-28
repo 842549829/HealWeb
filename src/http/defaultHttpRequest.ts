@@ -5,8 +5,6 @@ import { useStorage } from '@/hooks/web/useStorage'
 
 const { getStorage } = useStorage('localStorage')
 
-export const PATH_URL = import.meta.env.VITE_API_BASE_PATH
-
 // Http请求
 export class DefaultHttpRequest extends HttpRequestBase {
   constructor(config?: HttpRequestConfig) {
@@ -22,7 +20,7 @@ export class DefaultHttpRequest extends HttpRequestBase {
     }
 
     // 配置默认请求地址
-    defaultConfig.baseURL = PATH_URL
+    defaultConfig.baseURL = import.meta.env.VITE_APP_BASE_API
 
     super(defaultConfig)
   }

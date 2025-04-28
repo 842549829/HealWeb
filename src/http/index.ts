@@ -42,7 +42,7 @@ class AuthorizationHttpRequest extends HttpRequestBase {
     config.authorization = {
       maxRefreshTokenFrequency: 3,
       refreshToken: async (refreshToken: string) => {
-        const token = await defaultHttpRequest.post<Token>('/api/basics/accounts/refresh', {
+        const token = await defaultHttpRequest.post<Token>('/api/net/basics/accounts/refresh', {
           refreshToken
         })
         return token
