@@ -576,5 +576,22 @@ export default {
     selectModule: '请选择您要访问的功能模块',
     searchPlaceholder: '请输入搜索内容',
     noAccessModule: '暂无模块权限'
+  },
+  http: {
+    networkError: '网络连接错误，联系管理员!',
+    requestTimeout: '请求超时',
+    requestError400: '请求错误(400)',
+    requestError401: '未授权，请重新登录(401)',
+    requestError403: ' 拒绝访问(403)',
+    requestError404: '请求出错(404)',
+    requestError405: '请求方法未允许(405)',
+    requestError408: '请求超时(408)',
+    requestError500: '服务器错误(500)',
+    requestError501: '服务未实现(501)',
+    requestError502: '网络错误(502)',
+    requestError503: '服务不可用(503)',
+    requestError504: '网络超时(504)',
+    requestError505: 'HTTP版本不受支持(505)',
+    requestNetworkError: '连接出错'
   }
 }

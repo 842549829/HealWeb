@@ -43,7 +43,12 @@ watch(
 
 // 挂载时执行
 onMounted(async () => {
-  cardList.value = await homeHttpRequest.getModuleHomeListAsync()
+  try {
+    cardList.value = await homeHttpRequest.getModuleHomeListAsync()
+  } catch (error) {
+    console.error('Failed to fetch module list:', error)
+    cardList.value = [] // Set empty array as fallback
+  }
 })
 
 // 模块列表

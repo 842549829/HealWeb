@@ -13,6 +13,10 @@ import { useLocaleStore } from '@/store/modules/locale'
 import { useUserStore } from '@/store/modules/user'
 import type { UserType } from '@/api/login/types'
 import { Jwt, parseJwt } from '@/utils/token'
+import { useI18n } from '@/hooks/web/useI18n'
+
+// 获取i18n
+const { t } = useI18n()
 
 // 请求配置
 export class HttpRequestOptions {
@@ -39,7 +43,7 @@ export class HttpRequestOptions {
   }
 
   public getMessage(axiosError: AxiosError<AbpErrorData | AbpError>) {
-    let message = '连接出错'
+    let message = t('http.requestNetworkError')
     switch (axiosError.response?.status) {
       case 400: {
         const data = axiosError.response?.data
@@ -59,47 +63,50 @@ export class HttpRequestOptions {
             message = errors?.[Object.keys(errors)[0]][0]
           }
         }
-        message = message ?? '请求错误(400)'
+        message = message ?? t('http.requestError400')
         break
       }
       case 401:
         {
           const msg = this.getHttpResponseError(axiosError)
-          message = msg ?? '未授权，请重新登录(401)'
+          message = msg ?? t('http.requestError401')
         }
         break
       case 403:
         {
           const msg = this.getHttpResponseError(axiosError)
-          message = msg ?? '拒绝访问(403)'
+          message = msg ?? t('http.requestError403')
         }
         break
       case 404:
-        message = '请求出错(404)'
+        message = t('http.requestError404')
+        break
+      case 405:
+        message = t('http.requestError405')
         break
       case 408:
-        message = '请求超时(408)'
+        message = t('http.requestError408')
         break
       case 500:
-        message = '服务器错误(500)'
+        message = t('http.requestError500')
         break
       case 501:
-        message = '服务未实现(501)'
+        message = t('http.requestError501')
         break
       case 502:
-        message = '网络错误(502)'
+        message = t('http.requestError502')
         break
       case 503:
-        message = '服务不可用(503)'
+        message = t('http.requestError503')
         break
       case 504:
-        message = '网络超时(504)'
+        message = t('http.requestError504')
         break
       case 505:
-        message = 'HTTP版本不受支持(505)'
+        message = t('http.requestError505')
         break
       default:
-        message = `连接出错(${axiosError.response?.status})!`
+        message = `${t('http.requestNetworkError')}(${axiosError.response?.status})!`
     }
     return message
   }
@@ -128,10 +135,10 @@ export class HttpRequestOptions {
     axiosError: any,
     responseInterceptorCatchConfig: ResponseInterceptorCatchConfig
   ): Promise<any> {
-    let message: string = '连接错误'
+    let message: string = t('http.requestNetworkError')
     // 这里用来处理http常见错误，进行全局提示
     if (axiosError.response === undefined) {
-      message = '请检查网络或联系管理员'
+      message = t('http.networkError') //
     } else if (axiosError.response?.status === 401) {
       if (this.config?.authorization && responseInterceptorCatchConfig.refreshToken) {
         // 1.根据刷新refreshToken刷新accessToken

@@ -588,5 +588,22 @@ export default {
     selectModule: 'Please select the function module you want to access',
     searchPlaceholder: 'Please enter search content',
     noAccessModule: 'No access to the module'
+  },
+  http: {
+    networkError: 'Network connection error, please contact the administrator!',
+    requestTimeout: 'Request timeout',
+    requestError400: 'Bad request (400)',
+    requestError401: 'Unauthorized, please log in again (401)',
+    requestError403: 'Access denied (403)',
+    requestError404: 'Request not found (404)',
+    requestError405: 'Method not allowed (405)',
+    requestError408: 'Request timeout (408)',
+    requestError500: 'Internal server error (500)',
+    requestError501: 'Not implemented (501)',
+    requestError502: 'Bad gateway (502)',
+    requestError503: 'Service unavailable (503)',
+    requestError504: 'Gateway timeout (504)',
+    requestError505: 'HTTP version not supported (505)',
+    requestNetworkError: 'Connection error'
   }
 }

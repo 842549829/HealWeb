@@ -25,4 +25,3 @@ export class DefaultHttpRequest extends HttpRequestBase {
     super(defaultConfig)
   }
 }
-export const defaultHttpRequest = new DefaultHttpRequest()

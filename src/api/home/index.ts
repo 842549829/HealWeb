@@ -1,4 +1,4 @@
-import { authorizationHttpRequest as request } from '@/http/index'
+import { AuthorizationHttpRequest } from '@/http/index'
 import { ModuleHomeListDto } from './type'
 
 // Api地址
@@ -10,11 +10,20 @@ enum Api {
 // 首页
 export class HomeHttpRequest {
   // 获取模块列表
-  public getModuleHomeListAsync = () => request.get<ModuleHomeListDto[]>(Api.MODULE_LIST_URL)
+  public getModuleHomeListAsync() {
+    const request = this.getRequest()
+    return request.get<ModuleHomeListDto[]>(Api.MODULE_LIST_URL)
+  }
 
   // 获取菜单列表
-  public getMenuListAsync = (moduleName: string) => {
+  public getMenuListAsync(moduleName: string) {
+    const request = this.getRequest()
     const url = `${Api.MENU_LIST_URL}/${moduleName}`
     return request.get<AppCustomRouteRecordRaw[]>(url)
+  }
+
+  // 获取请求实例
+  private getRequest() {
+    return new AuthorizationHttpRequest()
   }
 }
