@@ -21,3 +21,8 @@ export const urlParamToJson = (url: string): { [key: string]: string | null } =>
 export const getApiUrl = (url: string, data: string): string => {
   return `${url}?${data}`
 }
+
+export const getUrlParameters = <T extends object>(url: string, json: T): string => {
+  const paramenter = jsonToUrlParam(json)
+  return getApiUrl(url, paramenter)
+}

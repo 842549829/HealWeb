@@ -549,7 +549,8 @@ export default {
     status: 'Status',
     enable: 'Enable',
     disable: 'Disable',
-    superiorDepartment: 'Superior department'
+    superiorDepartment: 'Superior department',
+    filter: 'Filter'
   },
   menu: {
     menuName: 'Menu name',
@@ -571,7 +572,9 @@ export default {
     menu: 'Menu'
   },
   module: {
-    module: 'Module'
+    module: 'Module',
+    name: 'Module name',
+    dislayName: 'Module code'
   },
   role: {
     roleName: 'Role name',

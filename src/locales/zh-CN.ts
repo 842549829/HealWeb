@@ -540,7 +540,8 @@ export default {
     // 禁用
     disable: '禁用',
     // 上级部门
-    superiorDepartment: '上级部门'
+    superiorDepartment: '上级部门',
+    filter: '筛选'
   },
   menu: {
     menuName: '菜单名称',
@@ -561,7 +562,9 @@ export default {
     menu: '菜单管理'
   },
   module: {
-    module: '模块管理'
+    module: '模块管理',
+    name: '模块名称',
+    dislayName: '模块编码'
   },
   role: {
     roleName: '角色名称',
