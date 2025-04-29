@@ -557,7 +557,11 @@ export default {
     noTagsView: '是否隐藏标签页',
     activeMenu: '高亮菜单',
     canTo: '是否可跳转',
-    name: '组件名称'
+    name: '组件名称',
+    menu: '菜单管理'
+  },
+  module: {
+    module: '模块管理'
   },
   role: {
     roleName: '角色名称',

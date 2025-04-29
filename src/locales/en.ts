@@ -567,7 +567,11 @@ export default {
     noTagsView: 'No tags view',
     activeMenu: 'Active menu',
     canTo: 'Can to',
-    name: 'Name'
+    name: 'Name',
+    menu: 'Menu'
+  },
+  module: {
+    module: 'Module'
   },
   role: {
     roleName: 'Role name',
