@@ -1,15 +1,10 @@
 import request from '@/axios'
 import type { UserLoginType, UserType } from './types'
 import { UnAuthorizationHttpRequest } from '@/http/index'
+import { ApiUrls } from '../urls/index'
 
 interface RoleParams {
   roleName: string
-}
-
-// Api地址
-enum Api {
-  LOGIN_URL = 'api/net/basics/accounts/login',
-  PERMISSION_URL = 'api/net/basics/permissions/routes'
 }
 
 // 登录
@@ -17,15 +12,8 @@ export class LoginHttpRequest {
   // 登录
   public loginAsync(input: UserLoginType) {
     const client = this.getRequest()
-    return client.post<UserType>(Api.LOGIN_URL, input)
+    return client.post<UserType>(ApiUrls.Accounts.Login, input)
   }
-
-  // 获取权限
-  public getPermissionAsync() {
-    const client = this.getRequest()
-    return client.get<AppCustomRouteRecordRaw[]>(Api.PERMISSION_URL)
-  }
-
   private getRequest() {
     return new UnAuthorizationHttpRequest()
   }
