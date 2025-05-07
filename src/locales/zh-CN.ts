@@ -564,7 +564,27 @@ export default {
   module: {
     module: '模块管理',
     name: '模块名称',
-    dislayName: '模块编码'
+    dislayName: '模块编码',
+    tag: '标签',
+    path: '模块路径',
+    component: '组件',
+    redirect: '重定向',
+    alias: '别名',
+    hidden: '是否隐藏',
+    alwaysShow: '是否一直显示',
+    icon: '图标',
+    noCache: '是否清除缓存',
+    breadcrumb: '是否显示面包屑',
+    affix: '是否固定在标签页',
+    activeMenu: '高亮菜单',
+    noTagsView: '是否隐藏标签页',
+    canTo: '是否可跳转',
+    tags: {
+      normal: '普通',
+      normalSystem: '普通系统',
+      system: '系统',
+      thirdParty: '第三方'
+    }
   },
   role: {
     roleName: '角色名称',

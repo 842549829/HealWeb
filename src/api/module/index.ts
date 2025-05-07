@@ -38,17 +38,18 @@ export class ModuleHttpRequest {
 
   /**
    * 修改模块
-   * @param input
+   * @param id 模块id
+   * @param input 修改模块
    * @returns
    */
-  public async updateAsync(input: ModuleUpdateDto): Promise<void> {
+  public async updateAsync(id: string, input: ModuleUpdateDto): Promise<void> {
     const client = this.getClinet()
-    return await client.put(ApiUrls.Module.Default, input)
+    return await client.put(`${ApiUrls.Module.Default}/${id}`, input)
   }
 
   /**
    * 获取模块列表
-   * @param id
+   * @param id 模块id
    * @returns
    */
   public async getListAsync(input: FilterInput): Promise<PagedResultDto<ModuleListDto>> {

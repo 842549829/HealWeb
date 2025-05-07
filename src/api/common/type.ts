@@ -102,3 +102,8 @@ export interface EntityDto<T> {
    */
   id: T
 }
+
+/**
+ * 操作类型
+ */
+export type ActionType = 'edit' | 'detail' | ''

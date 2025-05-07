@@ -574,7 +574,27 @@ export default {
   module: {
     module: 'Module',
     name: 'Module name',
-    dislayName: 'Module code'
+    dislayName: 'Module code',
+    tag: 'Tag',
+    path: 'Module Path',
+    component: 'Component',
+    redirect: 'Redirect',
+    alias: 'Alias',
+    hidden: 'Is Hidden',
+    alwaysShow: 'Always Show',
+    icon: 'Icon',
+    noCache: 'No Cache',
+    breadcrumb: 'Breadcrumb',
+    affix: 'Affix to Tabs',
+    activeMenu: 'Highlight Menu',
+    noTagsView: 'Hide Tags View',
+    canTo: 'Can Navigate',
+    tags: {
+      normal: 'Normal',
+      normalSystem: 'Normal system',
+      system: 'System',
+      thirdParty: 'Third party'
+    }
   },
   role: {
     roleName: 'Role name',
