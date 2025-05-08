@@ -7,6 +7,7 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { ModuleListDto } from '@/api/module/type'
 import { ModuleTag } from '@/api/common/type'
 import { cloneDeep } from 'lodash-es'
+import { generateEnumOptionsLocales } from '@/utils/enumUtils'
 
 // 引入i18n
 const { t } = useI18n()
@@ -23,24 +24,7 @@ const props = defineProps({
 })
 
 // 模块标签
-const moduleTagOptions = [
-  {
-    label: t('module.tags.normal'),
-    value: ModuleTag.Normal
-  },
-  {
-    label: t('module.tags.normalSystem'),
-    value: ModuleTag.NormalSystem
-  },
-  {
-    label: t('module.tags.system'),
-    value: ModuleTag.System
-  },
-  {
-    label: t('module.tags.thirdParty'),
-    value: ModuleTag.ThirdParty
-  }
-]
+const moduleTagOptions = generateEnumOptionsLocales(ModuleTag, t, 'module.tags')
 
 // 表单数据
 const formSchema = reactive<FormSchema[]>([
@@ -139,7 +123,7 @@ const rules = reactive({
 })
 
 const { formRegister, formMethods } = useForm()
-const { setValues, getFormData, getElFormExpose } = formMethods
+const { setValues, getFormData, getElFormExpose, setSchema } = formMethods
 
 // 表单提交
 const submit = async () => {
@@ -158,6 +142,20 @@ watch(
   () => props.currentRow,
   (value) => {
     if (!value) return
+
+    // 如果是编辑节点，则隐藏name和tag字段
+    setSchema([
+      {
+        field: 'name',
+        path: 'remove',
+        value: true
+      },
+      {
+        field: 'tag',
+        path: 'remove',
+        value: true
+      }
+    ])
     const currentRow = cloneDeep(value)
     setValues(currentRow)
   },
