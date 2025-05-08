@@ -32,6 +32,16 @@ const ModuleUrl = {
 }
 
 /**
+ * 菜单接口
+ */
+const MenuUrl = {
+  /**
+   * 默认菜单路径
+   */
+  Default: `${PREFIX}/menus`
+}
+
+/**
  * 接口地址
  */
 export const ApiUrls = {
@@ -46,5 +56,9 @@ export const ApiUrls = {
   /**
    * 模块接口
    */
-  Module: ModuleUrl
+  Module: ModuleUrl,
+  /**
+   * 菜单接口
+   */
+  Menu: MenuUrl
 }
