@@ -129,16 +129,6 @@ const addAction = () => {
   actionType.value = ''
 }
 
-// // 弹窗删除
-// const deleteAction = async (id: string) => {
-//   try {
-//     await moduleHttpRequest.deleteAsync(id)
-//     getList()
-//   } catch (error) {
-//     console.log(error)
-//   }
-// }
-
 // 弹窗当前选中的行
 const currentRow = ref<ModuleDto>()
 
@@ -167,7 +157,7 @@ const save = async () => {
     try {
       if (actionType.value === 'edit') {
         await moduleHttpRequest.updateAsync(currentRow.value!.id, formData as ModuleUpdateDto)
-      } else {
+      } else if (actionType.value === '') {
         await moduleHttpRequest.createAsync(formData as ModuleCreateDto)
       }
     } catch (error) {

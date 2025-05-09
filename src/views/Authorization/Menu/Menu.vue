@@ -1,11 +1,9 @@
 <script setup lang="tsx">
 import { reactive, ref, unref } from 'vue'
-import { getMenuListApi } from '@/api/menu'
+import { MenuHttpRequest } from '@/api/menu'
 import { useTable } from '@/hooks/web/useTable'
 import { useI18n } from '@/hooks/web/useI18n'
 import { Table, TableColumn } from '@/components/Table'
-import { ElTag } from 'element-plus'
-import { Icon } from '@/components/Icon'
 import { Search } from '@/components/Search'
 import { FormSchema } from '@/components/Form'
 import { ContentWrap } from '@/components/ContentWrap'
@@ -13,21 +11,53 @@ import Write from './components/Write.vue'
 import Detail from './components/Detail.vue'
 import { Dialog } from '@/components/Dialog'
 import { BaseButton } from '@/components/Button'
+import type { ActionType, FilterInput, PagedResultDto } from '@/api/common/type'
+import type { MenuCreateDto, MenuDto, MenuListDto, MenuUpdateDto } from '@/api/menu/type'
 
+// i18n
 const { t } = useI18n()
 
+// menuHttpRequest
+const menuHttpRequest = new MenuHttpRequest()
+
+// 删除的ids
+const ids = ref<string[]>([])
+// 删除的loading
+const delLoading = ref(false)
+
+// useTable
 const { tableRegister, tableState, tableMethods } = useTable({
+  // 获取数据
   fetchDataApi: async () => {
-    const res = await getMenuListApi()
-    return {
-      list: res.data.list || []
+    const skipCount = (unref(currentPage) - 1) * unref(pageSize)
+    const input: FilterInput = {
+      skipCount: skipCount,
+      maxResultCount: unref(pageSize),
+      ...unref(searchParams)
     }
+    const res: PagedResultDto<MenuListDto> = await menuHttpRequest.getListAsync(input)
+    return {
+      list: res.items || [],
+      total: res.totalCount
+    }
+  },
+  // 删除
+  fetchDelApi: async () => {
+    const idList = unref(ids)
+    if (idList.length === 0) {
+      await menuHttpRequest.deleteAsync(idList[0])
+      return true
+    }
+
+    await menuHttpRequest.deleteBatchAsync(idList)
+    return true
   }
 })
 
-const { dataList, loading } = tableState
-const { getList } = tableMethods
+const { dataList, loading, total, currentPage, pageSize } = tableState
+const { getList, getElTableExpose, delList } = tableMethods
 
+// 表格列定义
 const tableColumns = reactive<TableColumn[]>([
   {
     field: 'index',
@@ -35,69 +65,22 @@ const tableColumns = reactive<TableColumn[]>([
     type: 'index'
   },
   {
-    field: 'meta.title',
-    label: t('menu.menuName'),
+    field: 'name',
+    label: t('menu.code'),
     slots: {
       default: (data: any) => {
-        const title = data.row.meta.title
-        return <>{title}</>
+        const name = data.row.name
+        return <>{name}</>
       }
     }
   },
   {
-    field: 'meta.icon',
-    label: t('menu.icon'),
+    field: 'dislayName',
+    label: t('menu.dislayName'),
     slots: {
       default: (data: any) => {
-        const icon = data.row.meta.icon
-        if (icon) {
-          return (
-            <>
-              <Icon icon={icon} />
-            </>
-          )
-        } else {
-          return null
-        }
-      }
-    }
-  },
-  // {
-  //   field: 'meta.permission',
-  //   label: t('menu.permission'),
-  //   slots: {
-  //     default: (data: any) => {
-  //       const permission = data.row.meta.permission
-  //       return permission ? <>{permission.join(', ')}</> : null
-  //     }
-  //   }
-  // },
-  {
-    field: 'component',
-    label: t('menu.component'),
-    slots: {
-      default: (data: any) => {
-        const component = data.row.component
-        return <>{component === '#' ? '顶级目录' : component === '##' ? '子目录' : component}</>
-      }
-    }
-  },
-  {
-    field: 'path',
-    label: t('menu.path')
-  },
-  {
-    field: 'status',
-    label: t('menu.status'),
-    slots: {
-      default: (data: any) => {
-        return (
-          <>
-            <ElTag type={data.row.status === 0 ? 'danger' : 'success'}>
-              {data.row.status === 1 ? t('userDemo.enable') : t('userDemo.disable')}
-            </ElTag>
-          </>
-        )
+        const dislayName = data.row.dislayName
+        return <>{dislayName}</>
       }
     }
   },
@@ -107,7 +90,7 @@ const tableColumns = reactive<TableColumn[]>([
     width: 240,
     slots: {
       default: (data: any) => {
-        const row = data.row
+        const row = data.row as MenuListDto
         return (
           <>
             <BaseButton type="primary" onClick={() => action(row, 'edit')}>
@@ -116,7 +99,9 @@ const tableColumns = reactive<TableColumn[]>([
             <BaseButton type="success" onClick={() => action(row, 'detail')}>
               {t('exampleDemo.detail')}
             </BaseButton>
-            <BaseButton type="danger">{t('exampleDemo.del')}</BaseButton>
+            <BaseButton type="danger" onClick={() => delData(row)}>
+              {t('exampleDemo.del')}
+            </BaseButton>
           </>
         )
       }
@@ -124,54 +109,77 @@ const tableColumns = reactive<TableColumn[]>([
   }
 ])
 
+// 查询条件定义
 const searchSchema = reactive<FormSchema[]>([
   {
-    field: 'meta.title',
-    label: t('menu.menuName'),
+    field: 'filter',
+    label: t('userDemo.filter'),
     component: 'Input'
   }
 ])
 
+// 查询条件数据
 const searchParams = ref({})
+
+// 设置查询条件数据
 const setSearchParams = (data: any) => {
   searchParams.value = data
   getList()
 }
 
-const dialogVisible = ref(false)
-const dialogTitle = ref('')
+const dialogVisible = ref<boolean>(false)
+const dialogTitle = ref<string>('')
 
-const currentRow = ref()
-const actionType = ref('')
+const currentRow = ref<MenuDto>()
+const actionType = ref<ActionType>('')
 
 const writeRef = ref<ComponentRef<typeof Write>>()
 
 const saveLoading = ref(false)
 
-const action = (row: any, type: string) => {
+const action = async (row: MenuListDto, type: ActionType) => {
   dialogTitle.value = t(type === 'edit' ? 'exampleDemo.edit' : 'exampleDemo.detail')
   actionType.value = type
-  currentRow.value = row
   dialogVisible.value = true
+  currentRow.value = await menuHttpRequest.getAsync(row.id)
 }
 
-const AddAction = () => {
+const delData = async (row: MenuListDto | null) => {
+  const elTableExpose = await getElTableExpose()
+  ids.value = row ? [row.id] : elTableExpose?.getSelectionRows().map((v: MenuListDto) => v.id) || []
+  delLoading.value = true
+  await delList(unref(ids).length).finally(() => {
+    delLoading.value = false
+  })
+}
+
+const addAction = () => {
   dialogTitle.value = t('exampleDemo.add')
   currentRow.value = undefined
   dialogVisible.value = true
   actionType.value = ''
 }
 
+// 保存
 const save = async () => {
   const write = unref(writeRef)
   const formData = await write?.submit()
-  console.log(formData)
   if (formData) {
     saveLoading.value = true
-    setTimeout(() => {
+    try {
+      if (actionType.value === 'edit') {
+        await menuHttpRequest.updateAsync(currentRow.value!.id, formData as MenuUpdateDto)
+      } else if (actionType.value === '') {
+        await menuHttpRequest.createAsync(formData as MenuCreateDto)
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
       saveLoading.value = false
       dialogVisible.value = false
-    }, 1000)
+    }
+
+    getList()
   }
 }
 </script>
@@ -180,14 +188,19 @@ const save = async () => {
   <ContentWrap>
     <Search :schema="searchSchema" @reset="setSearchParams" @search="setSearchParams" />
     <div class="mb-10px">
-      <BaseButton type="primary" @click="AddAction">{{ t('exampleDemo.add') }}</BaseButton>
+      <BaseButton type="primary" @click="addAction">{{ t('exampleDemo.add') }}</BaseButton>
     </div>
     <Table
+      v-model:pageSize="pageSize"
+      v-model:currentPage="currentPage"
       :columns="tableColumns"
-      default-expand-all
-      node-key="id"
       :data="dataList"
       :loading="loading"
+      :pagination="{
+        total: total,
+        pageSizes: [10, 20, 30, 40, 50],
+        pageSize: pageSize
+      }"
       @register="tableRegister"
     />
   </ContentWrap>

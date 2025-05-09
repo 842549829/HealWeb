@@ -545,6 +545,8 @@ export default {
   },
   menu: {
     menuName: '菜单名称',
+    code: '编码',
+    dislayName: '显示名称',
     icon: '图标',
     permission: '按钮权限',
     component: '组件',

@@ -38,7 +38,11 @@ const MenuUrl = {
   /**
    * 默认菜单路径
    */
-  Default: `${PREFIX}/menus`
+  Default: `${PREFIX}/menus`,
+  /**
+   * 批量删除
+   */
+  DeleteBatch: `${PREFIX}/menus/delete-batch`
 }
 
 /**

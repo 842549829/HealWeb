@@ -555,6 +555,8 @@ export default {
   menu: {
     menuName: 'Menu name',
     icon: 'Icon',
+    code: 'Code',
+    dislayName: 'Display name',
     // 权限
     permission: 'Permission',
     component: 'Component',

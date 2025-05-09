@@ -148,5 +148,8 @@ export interface EntityDto<T> {
 
 /**
  * 操作类型
+ * edit: 编辑
+ * detail: 详情
+ * '空'：新增
  */
 export type ActionType = 'edit' | 'detail' | ''

@@ -58,6 +58,30 @@ export class MenuHttpRequest {
     const url = getUrlParameters(ApiUrls.Menu.Default, input)
     return await client.get<PagedResultDto<MenuListDto>>(url)
   }
+
+  /**
+   * 删除菜单
+   * @param id 菜单id
+   * @returns
+   */
+  public async deleteAsync(id: string): Promise<void> {
+    const client = this.getClinet()
+    return await client.delete(`${ApiUrls.Menu.Default}/${id}`)
+  }
+
+  /**
+   * 批量删除
+   * @param id 菜单ids
+   * @returns
+   */
+  public async deleteBatchAsync(ids: string[]): Promise<void> {
+    const client = this.getClinet()
+    return await client.delete(`${ApiUrls.Menu.DeleteBatch}`, {
+      data: {
+        ids
+      }
+    })
+  }
 }
 
 export const getMenuListApi = () => {
