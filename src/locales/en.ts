@@ -50,7 +50,8 @@ export default {
     notSpecialCharacters: 'Special characters are not allowed',
     isEqual: 'The two are not equal',
     // 列设置
-    setting: 'Setting'
+    setting: 'Setting',
+    isNumber: 'Number'
   },
   lock: {
     lockScreen: 'Lock screen',
@@ -556,6 +557,27 @@ export default {
     menuName: 'Menu name',
     icon: 'Icon',
     code: 'Code',
+    groupName: 'Belonging Module Group',
+    parentName: 'Parent Menu',
+    tag: 'Tag',
+    redirect: 'Redirect',
+    alias: 'Alias',
+    title: 'Title',
+    multiTenancySide: 'Multi-Tenancy Setting',
+    multiTenancySides: {
+      tenant: 'Multi-Tenant',
+      host: 'Single Tenant',
+      both: 'Multi-Tenant + Single Tenant'
+    },
+    providers: 'Providers',
+    stateCheckers: 'State Checkers',
+    type: 'Permission Type',
+    types: {
+      module: 'Module',
+      menu: 'Menu',
+      button: 'Button'
+    },
+    isEnabled: 'Is Enabled',
     dislayName: 'Display name',
     // 权限
     permission: 'Permission',

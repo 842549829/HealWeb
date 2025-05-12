@@ -96,6 +96,20 @@ export const useValidator = () => {
     }
   }
 
+  // 只能是数字
+  const number = (message?: string): FormItemRule => {
+    return {
+      validator: (_, val, callback) => {
+        if (!val) return callback()
+        if (!/^[1-9]\d*$/.test(val)) {
+          callback(new Error(message || t('common.isNumber')))
+        } else {
+          callback()
+        }
+      }
+    }
+  }
+
   return {
     required,
     lengthRange,
@@ -104,6 +118,7 @@ export const useValidator = () => {
     phone,
     email,
     maxlength,
-    check
+    check,
+    number
   }
 }

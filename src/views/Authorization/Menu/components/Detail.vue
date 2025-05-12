@@ -3,6 +3,10 @@ import { PropType, ref } from 'vue'
 import { Descriptions, DescriptionsSchema } from '@/components/Descriptions'
 import { Icon } from '@/components/Icon'
 import { ElTag } from 'element-plus'
+import { useI18n } from '@/hooks/web/useI18n'
+import { MultiTenancySides, PermissionType } from '@/api/common/type'
+
+const { t } = useI18n()
 
 defineProps({
   currentRow: {
@@ -17,41 +21,52 @@ const renderTag = (enable?: boolean) => {
 
 const detailSchema = ref<DescriptionsSchema[]>([
   {
-    field: 'type',
-    label: '菜单类型',
-    span: 24,
-    slots: {
-      default: (data) => {
-        const type = data.type
-        return <>{type === 1 ? '菜单' : '目录'}</>
-      }
-    }
+    field: 'permissionName',
+    label: t('menu.code')
+  },
+  {
+    field: 'groupName',
+    label: t('menu.groupName')
+  },
+  {
+    field: 'displayName',
+    label: t('menu.menuName')
   },
   {
     field: 'parentName',
-    label: '父级菜单'
+    label: t('menu.parentName')
   },
   {
-    field: 'meta.title',
-    label: '菜单名称'
+    field: 'tag',
+    label: t('menu.tag')
   },
   {
-    field: 'component',
-    label: '组件',
-    slots: {
-      default: (data) => {
-        const component = data.component
-        return <>{component === '#' ? '顶级目录' : component === '##' ? '子目录' : component}</>
-      }
-    }
+    field: 'path',
+    label: t('menu.path')
   },
   {
     field: 'name',
-    label: '组件名称'
+    label: t('menu.name')
   },
   {
-    field: 'meta.icon',
-    label: '图标',
+    field: 'component',
+    label: t('menu.component')
+  },
+  {
+    field: 'redirect',
+    label: t('menu.redirect')
+  },
+  {
+    field: 'alias',
+    label: t('menu.alias')
+  },
+  {
+    field: 'title',
+    label: t('menu.title')
+  },
+  {
+    field: 'icon',
+    label: t('menu.icon'),
     slots: {
       default: (data) => {
         const icon = data.icon
@@ -68,100 +83,119 @@ const detailSchema = ref<DescriptionsSchema[]>([
     }
   },
   {
-    field: 'path',
-    label: '路径'
+    field: 'activeMenu',
+    label: t('menu.activeMenu')
   },
   {
-    field: 'meta.activeMenu',
-    label: '高亮菜单'
-  },
-  {
-    field: 'permissionList',
-    label: '按钮权限',
-    span: 24,
-    slots: {
-      default: (data: any) => (
-        <>
-          {data?.permissionList?.map((v) => {
-            return (
-              <ElTag class="mr-1" key={v.value}>
-                {v.label}
-              </ElTag>
-            )
-          })}
-        </>
-      )
-    }
-  },
-  {
-    field: 'menuState',
-    label: '菜单状态',
+    field: 'multiTenancySide',
+    label: t('menu.multiTenancySide'),
     slots: {
       default: (data) => {
-        return renderTag(data.menuState)
+        const multiTenancySide = data.tag
+        if (multiTenancySide == MultiTenancySides.Both) {
+          return <>{t('menu.multiTenancySides.both')}</>
+        }
+        if (multiTenancySide == MultiTenancySides.Host) {
+          return <>{t('menu.multiTenancySides.host')}</>
+        }
+        if (multiTenancySide == MultiTenancySides.Tenant) {
+          return <>{t('menu.multiTenancySides.tenant')}</>
+        }
+        return null
       }
     }
   },
   {
-    field: 'meta.hidden',
-    label: '是否隐藏',
+    field: 'providers',
+    label: t('menu.providers')
+  },
+  {
+    field: 'stateCheckers',
+    label: t('menu.stateCheckers')
+  },
+  {
+    field: 'type',
+    label: t('menu.type'),
     slots: {
       default: (data) => {
-        return renderTag(data.enableHidden)
+        const permissionType = data.tag
+        if (permissionType == PermissionType.Module) {
+          return <>{t('menu.types.module')}</>
+        }
+        if (permissionType == PermissionType.Button) {
+          return <>{t('menu.types.button')}</>
+        }
+        if (permissionType == PermissionType.Menu) {
+          return <>{t('menu.types.menu')}</>
+        }
+        return null
       }
     }
   },
   {
-    field: 'meta.alwaysShow',
-    label: '是否一直显示',
+    field: 'isEnabled',
+    label: t('menu.isEnabled')
+  },
+  {
+    field: 'hidden',
+    label: t('menu.hidden'),
     slots: {
       default: (data) => {
-        return renderTag(data.enableDisplay)
+        return renderTag(data.hidden)
       }
     }
   },
   {
-    field: 'meta.noCache',
-    label: '是否清除缓存',
+    field: 'alwaysShow',
+    label: t('menu.alwaysShow'),
     slots: {
       default: (data) => {
-        return renderTag(data.enableCleanCache)
+        return renderTag(data.alwaysShow)
       }
     }
   },
   {
-    field: 'meta.breadcrumb',
-    label: '是否显示面包屑',
+    field: 'noCache',
+    label: t('menu.noCache'),
     slots: {
       default: (data) => {
-        return renderTag(data.enableShowCrumb)
+        return renderTag(data.noCache)
       }
     }
   },
   {
-    field: 'meta.affix',
-    label: '是否固定标签页',
+    field: 'breadcrumb',
+    label: t('menu.breadcrumb'),
     slots: {
       default: (data) => {
-        return renderTag(data.enablePinnedTab)
+        return renderTag(data.breadcrumb)
       }
     }
   },
   {
-    field: 'meta.noTagsView',
-    label: '是否隐藏标签页',
+    field: 'affix',
+    label: t('menu.affix'),
     slots: {
       default: (data) => {
-        return renderTag(data.enableHiddenTab)
+        return renderTag(data.affix)
       }
     }
   },
   {
-    field: 'meta.canTo',
-    label: '是否可跳转',
+    field: 'noTagsView',
+    label: t('menu.noTagsView'),
     slots: {
       default: (data) => {
-        return renderTag(data.enableSkip)
+        return renderTag(data.noTagsView)
+      }
+    }
+  },
+  {
+    field: 'canTo',
+    label: t('menu.canTo'),
+    slots: {
+      default: (data) => {
+        return renderTag(data.canTo)
       }
     }
   }

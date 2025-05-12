@@ -44,7 +44,7 @@ const { tableRegister, tableState, tableMethods } = useTable({
   // 删除
   fetchDelApi: async () => {
     const idList = unref(ids)
-    if (idList.length === 0) {
+    if (idList.length === 1) {
       await menuHttpRequest.deleteAsync(idList[0])
       return true
     }

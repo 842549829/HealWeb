@@ -49,7 +49,8 @@ export default {
     notSpace: '不能包含空格',
     notSpecialCharacters: '不能包含特殊字符',
     isEqual: '两次输入不一致',
-    setting: '设置'
+    setting: '设置',
+    isNumber: '只能是数字'
   },
   lock: {
     lockScreen: '锁定屏幕',
@@ -546,6 +547,27 @@ export default {
   menu: {
     menuName: '菜单名称',
     code: '编码',
+    groupName: '所属模块组',
+    parentName: '父级菜单',
+    tag: '标签',
+    redirect: '重定向',
+    alias: '别名',
+    title: '标题',
+    multiTenancySide: '多租户设置',
+    multiTenancySides: {
+      tenant: '多租户',
+      host: '单租户',
+      both: '多租户+单租户'
+    },
+    providers: '提供者',
+    stateCheckers: '状态检查器',
+    type: '权限类型',
+    types: {
+      module: '模块',
+      menu: '菜单',
+      button: '按钮'
+    },
+    isEnabled: '是否启用',
     dislayName: '显示名称',
     icon: '图标',
     permission: '按钮权限',
@@ -560,7 +582,7 @@ export default {
     noTagsView: '是否隐藏标签页',
     activeMenu: '高亮菜单',
     canTo: '是否可跳转',
-    name: '组件名称',
+    name: '路由名称',
     menu: '菜单管理'
   },
   module: {
