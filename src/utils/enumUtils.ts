@@ -23,3 +23,24 @@ export const generateEnumOptionsLocales = (
     }
   })
 }
+
+/**
+ * 根据枚举值获取枚举key
+ * @param enumObj enum对象
+ * @param value 枚举值
+ * @param prefix 前缀
+ * @returns 枚举key
+ */
+export const getEnumKeyByValue = (
+  enumObj: Record<string, any>,
+  value: any,
+  prefix: string | undefined = undefined
+) => {
+  const keys = Object.keys(enumObj)
+  for (const key of keys) {
+    if (enumObj[key] === value) {
+      return `${prefix}.${toLowerCaseFirstLetter(key)}`
+    }
+  }
+  return ''
+}

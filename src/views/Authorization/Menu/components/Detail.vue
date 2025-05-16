@@ -5,6 +5,8 @@ import { Icon } from '@/components/Icon'
 import { ElTag } from 'element-plus'
 import { useI18n } from '@/hooks/web/useI18n'
 import { MultiTenancySides, PermissionType } from '@/api/common/type'
+import { getEnumKeyByValue } from '@/utils/enumUtils'
+import { EnumShow } from '@/components/Enums/index'
 
 const { t } = useI18n()
 
@@ -17,6 +19,24 @@ defineProps({
 
 const renderTag = (enable?: boolean) => {
   return <ElTag type={!enable ? 'danger' : 'success'}>{enable ? '启用' : '禁用'}</ElTag>
+}
+
+const multiTenancySide = (
+  enumObj: Record<string, any>,
+  value: any,
+  prefix: string | undefined = undefined
+) => {
+  const key = getEnumKeyByValue(enumObj, value, prefix)
+  return <EnumShow value={key} />
+}
+
+const permissionType = (
+  enumObj: Record<string, any>,
+  value: any,
+  prefix: string | undefined = undefined
+) => {
+  const key = getEnumKeyByValue(enumObj, value, prefix)
+  return <EnumShow value={key} />
 }
 
 const detailSchema = ref<DescriptionsSchema[]>([
@@ -91,17 +111,7 @@ const detailSchema = ref<DescriptionsSchema[]>([
     label: t('menu.multiTenancySide'),
     slots: {
       default: (data) => {
-        const multiTenancySide = data.tag
-        if (multiTenancySide == MultiTenancySides.Both) {
-          return <>{t('menu.multiTenancySides.both')}</>
-        }
-        if (multiTenancySide == MultiTenancySides.Host) {
-          return <>{t('menu.multiTenancySides.host')}</>
-        }
-        if (multiTenancySide == MultiTenancySides.Tenant) {
-          return <>{t('menu.multiTenancySides.tenant')}</>
-        }
-        return null
+        return multiTenancySide(MultiTenancySides, data.tag, 'menu.multiTenancySides')
       }
     }
   },
@@ -118,17 +128,7 @@ const detailSchema = ref<DescriptionsSchema[]>([
     label: t('menu.type'),
     slots: {
       default: (data) => {
-        const permissionType = data.tag
-        if (permissionType == PermissionType.Module) {
-          return <>{t('menu.types.module')}</>
-        }
-        if (permissionType == PermissionType.Button) {
-          return <>{t('menu.types.button')}</>
-        }
-        if (permissionType == PermissionType.Menu) {
-          return <>{t('menu.types.menu')}</>
-        }
-        return null
+        return permissionType(PermissionType, data.tag, 'menu.types')
       }
     }
   },
