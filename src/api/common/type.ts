@@ -153,3 +153,23 @@ export interface EntityDto<T> {
  * '空'：新增
  */
 export type ActionType = 'edit' | 'detail' | ''
+
+/**
+ * 带并发控制戳的实体通用类型
+ */
+export interface IHasConcurrencyStamp {
+  /**
+   * 并发控制戳，用于防止并发更新冲突。
+   */
+  concurrencyStamp: string
+}
+
+/**
+ * 创建时间属性
+ */
+export interface IHasCreationTime {
+  /**
+   * 扩展属性
+   */
+  creationTime: Date
+}

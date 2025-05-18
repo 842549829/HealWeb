@@ -1,6 +1,5 @@
 <script setup lang="tsx">
 import { reactive, ref, unref } from 'vue'
-import { getRoleListApi } from '@/api/role'
 import { useTable } from '@/hooks/web/useTable'
 import { useI18n } from '@/hooks/web/useI18n'
 import { Table, TableColumn } from '@/components/Table'
@@ -12,22 +11,55 @@ import Write from './components/Write.vue'
 import Detail from './components/Detail.vue'
 import { Dialog } from '@/components/Dialog'
 import { BaseButton } from '@/components/Button'
+import { RoleHttpRequest } from '@/api/role/index'
+import { ActionType, FilterInput, PagedResultDto } from '@/api/common/type'
+import { IdentityRoleDto } from '@/api/role/type'
 
+// 多语言配装
 const { t } = useI18n()
 
+// 角色管理请求
+const roleHttpRequest = new RoleHttpRequest()
+
+// 删除的ids
+const ids = ref<string[]>([])
+
+// useTable
 const { tableRegister, tableState, tableMethods } = useTable({
   fetchDataApi: async () => {
-    const res = await getRoleListApi()
-    return {
-      list: res.data.list || [],
-      total: res.data.total
+    const skipCount = (unref(currentPage) - 1) * unref(pageSize)
+    const input: FilterInput = {
+      skipCount: skipCount,
+      maxResultCount: unref(pageSize),
+      ...unref(searchParams)
     }
+    const res: PagedResultDto<IdentityRoleDto> = await roleHttpRequest.getListAsync(input)
+    return {
+      list: res.items || [],
+      total: res.totalCount
+    }
+  },
+  // 删除
+  fetchDelApi: async () => {
+    const idList = unref(ids)
+    if (idList.length === 1) {
+      await roleHttpRequest.deleteAsync(idList[0])
+      return true
+    }
+    return false
   }
 })
 
-const { dataList, loading, total } = tableState
+// 解构表格数据
+const { dataList, loading, total, currentPage, pageSize } = tableState
 const { getList } = tableMethods
 
+// 渲染tag
+const renderTag = (enable?: boolean) => {
+  return <ElTag type={!enable ? 'danger' : 'success'}>{enable ? '启用' : '禁用'}</ElTag>
+}
+
+// 表格列定义
 const tableColumns = reactive<TableColumn[]>([
   {
     field: 'index',
@@ -35,8 +67,39 @@ const tableColumns = reactive<TableColumn[]>([
     type: 'index'
   },
   {
-    field: 'roleName',
+    field: 'name',
     label: t('role.roleName')
+  },
+  {
+    field: 'isDefault',
+    label: t('role.isDefault'),
+    slots: {
+      default: (data: any) => {
+        return renderTag(data.row.isDefault)
+      }
+    }
+  },
+  {
+    field: 'isStatic',
+    label: t('role.isStatic'),
+    slots: {
+      default: (data: any) => {
+        return renderTag(data.row.isDefault)
+      }
+    }
+  },
+  {
+    field: 'isPublic',
+    label: t('role.isPublic'),
+    slots: {
+      default: (data: any) => {
+        return renderTag(data.row.isDefault)
+      }
+    }
+  },
+  {
+    field: 'creationTime',
+    label: t('role.creationTime')
   },
   {
     field: 'status',
@@ -52,14 +115,6 @@ const tableColumns = reactive<TableColumn[]>([
         )
       }
     }
-  },
-  {
-    field: 'createTime',
-    label: t('tableDemo.displayTime')
-  },
-  {
-    field: 'remark',
-    label: t('userDemo.remark')
   },
   {
     field: 'action',
@@ -84,15 +139,18 @@ const tableColumns = reactive<TableColumn[]>([
   }
 ])
 
+// 搜索表单定义
 const searchSchema = reactive<FormSchema[]>([
   {
-    field: 'roleName',
-    label: t('role.roleName'),
+    field: 'filter',
+    label: t('userDemo.filter'),
     component: 'Input'
   }
 ])
 
-const searchParams = ref({})
+// 搜索表单数据
+const searchParams = ref()
+// 设置搜索表单数据
 const setSearchParams = (data: any) => {
   searchParams.value = data
   getList()
@@ -101,27 +159,37 @@ const setSearchParams = (data: any) => {
 const dialogVisible = ref(false)
 const dialogTitle = ref('')
 
-const currentRow = ref()
-const actionType = ref('')
+// 当前选中的行
+const currentRow = ref<IdentityRoleDto>()
+// 当前操作的类型
+const actionType = ref<ActionType>('')
 
+// 编辑组件实例
 const writeRef = ref<ComponentRef<typeof Write>>()
 
+// 保存loading
 const saveLoading = ref(false)
-
-const action = (row: any, type: string) => {
+// 操作(编辑/详情)
+const action = (row: any, type: ActionType) => {
   dialogTitle.value = t(type === 'edit' ? 'exampleDemo.edit' : 'exampleDemo.detail')
   actionType.value = type
   currentRow.value = row
   dialogVisible.value = true
 }
 
+// 新增操作
 const AddAction = () => {
+  // 设置弹窗标题
   dialogTitle.value = t('exampleDemo.add')
+  // 将当前行数据源清空(因为编辑会用到)
   currentRow.value = undefined
+  // 显示弹窗
   dialogVisible.value = true
+  // 操作类型设置为空表示是新增
   actionType.value = ''
 }
 
+// 保存操作
 const save = async () => {
   const write = unref(writeRef)
   const formData = await write?.submit()

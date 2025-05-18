@@ -46,6 +46,24 @@ const MenuUrl = {
 }
 
 /**
+ * 角色接口
+ */
+const RoleUrl = {
+  /**
+   * 默认权限路径
+   */
+  Default: `${PREFIX}/roles`,
+  /**
+   * 获取角色
+   */
+  Permissions: `${PREFIX}/roles/permissions`,
+  /**
+   * 获取所有角色
+   */
+  All: `${PREFIX}/roles/all`
+}
+
+/**
  * 接口地址
  */
 export const ApiUrls = {
@@ -64,5 +82,9 @@ export const ApiUrls = {
   /**
    * 菜单接口
    */
-  Menu: MenuUrl
+  Menu: MenuUrl,
+  /**
+   * 角色接口
+   */
+  Role: RoleUrl
 }

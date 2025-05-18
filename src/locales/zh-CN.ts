@@ -613,7 +613,12 @@ export default {
   role: {
     roleName: '角色名称',
     role: '角色',
-    menu: '菜单分配'
+    menu: '菜单分配',
+    isDefault: '默认角色',
+    isPublic: '公开角色',
+    permissions: '权限分配',
+    isStatic: '静态角色',
+    creationTime: '创建时间'
   },
   inputPasswordDemo: {
     title: '密码输入框',

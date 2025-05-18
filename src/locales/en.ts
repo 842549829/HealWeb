@@ -623,8 +623,12 @@ export default {
   role: {
     roleName: 'Role name',
     role: 'Role',
-    // 菜单分配
-    menu: 'Menu allocation'
+    menu: 'Menu allocation',
+    isDefault: 'Default Role',
+    isPublic: 'Public Role',
+    permissions: 'Permission Assignment',
+    isStatic: 'Static Role',
+    creationTime: 'Creation Time'
   },
   inputPasswordDemo: {
     title: 'InputPassword',
