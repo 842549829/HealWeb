@@ -3,7 +3,6 @@ import { PropType, ref, unref, nextTick } from 'vue'
 import { Descriptions, DescriptionsSchema } from '@/components/Descriptions'
 import { ElTag, ElTree } from 'element-plus'
 import { findIndex } from '@/utils'
-import { getMenuListApi } from '@/api/menu'
 
 defineProps({
   currentRow: {
@@ -32,11 +31,11 @@ const nodeClick = (treeData: any) => {
 
 const treeData = ref<any[]>([])
 const getMenuList = async () => {
-  const res = await getMenuListApi()
-  if (res) {
-    treeData.value = res.data.list
-    await nextTick()
-  }
+  // const res = { data: { list: [] }
+  // if (res) {
+  //   treeData.value = res.data.list
+  //   await nextTick()
+  // }
 }
 getMenuList()
 

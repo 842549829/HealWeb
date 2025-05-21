@@ -5,13 +5,16 @@ import { PropType, reactive, watch, ref, unref, nextTick } from 'vue'
 import { useValidator } from '@/hooks/web/useValidator'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ElTree, ElCheckboxGroup, ElCheckbox } from 'element-plus'
-import { getMenuListApi } from '@/api/menu'
+import { PermissionHttpRequest } from '@/api/permission/index'
+import type { RolePermissionTreeDto } from '@/api/permission/type'
 import { filter, eachTree } from '@/utils/tree'
 import { findIndex } from '@/utils'
 
 const { t } = useI18n()
 
 const { required } = useValidator()
+
+const permissionHttpRequest = new PermissionHttpRequest()
 
 const props = defineProps({
   currentRow: {
@@ -79,7 +82,11 @@ const formSchema = ref<FormSchema[]>([
                   {unref(currentTreeData) && unref(currentTreeData)?.permissionList ? (
                     <ElCheckboxGroup v-model={unref(currentTreeData).meta.permission}>
                       {unref(currentTreeData)?.permissionList.map((v: any) => {
-                        return <ElCheckbox label={v.value}>{v.label}</ElCheckbox>
+                        return (
+                          <ElCheckbox label={v.value} key={v.value}>
+                            {v.label}
+                          </ElCheckbox>
+                        )
                       })}
                     </ElCheckboxGroup>
                   ) : null}
@@ -107,11 +114,14 @@ const rules = reactive({
 const { formRegister, formMethods } = useForm()
 const { setValues, getFormData, getElFormExpose } = formMethods
 
-const treeData = ref([])
+const treeData = ref<RolePermissionTreeDto[]>([])
 const getMenuList = async () => {
-  const res = await getMenuListApi()
+  const res = await permissionHttpRequest.getAllRolePermissionTreeListAsync()
+  // 获取当前角色拥有的权限
   if (res) {
-    treeData.value = res.data.list
+    treeData.value = res
+
+    // 根据当前角色去session中的权限去设置tree的选中
     if (!props.currentRow) return
     await nextTick()
     const checked: any[] = []
@@ -123,16 +133,16 @@ const getMenuList = async () => {
     })
     eachTree(treeData.value, (v) => {
       const index = findIndex(checked, (item) => {
-        return item.id === v.id
+        return item.permissionName === v.permissionName
       })
       if (index > -1) {
-        const meta = { ...(v.meta || {}) }
+        const meta = { ...v.meta }
         meta.permission = checked[index].permission
         v.meta = meta
       }
     })
     for (const item of checked) {
-      unref(treeRef)?.setChecked(item.id, true, false)
+      unref(treeRef)?.setChecked(item.permissionName, true, false)
     }
     // unref(treeRef)?.setCheckedKeys(
     //   checked.map((v) => v.id),

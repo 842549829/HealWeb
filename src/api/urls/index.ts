@@ -1,5 +1,11 @@
 const PREFIX = 'api/net/basics'
 
+const PermissionsPrefix = 'permissions'
+const ModulesPrefix = 'modules'
+const MenusPrefix = 'menus'
+const RolesPrefix = 'roles'
+const AccountPrefix = 'accounts'
+
 /**
  * 权限接口
  */
@@ -7,18 +13,22 @@ const PermissionsUrl = {
   /**
    * 获取模块列表
    */
-  ModuleList: `${PREFIX}/permissions/module-list`,
+  ModuleList: `${PREFIX}/${PermissionsPrefix}/module-list`,
   /**
    * 获取路由列表
    */
-  Routes: `${PREFIX}/permissions/routes`
+  Routes: `${PREFIX}/${PermissionsPrefix}/routes`,
+  /**
+   * 获取权限列表
+   */
+  RoleList: `${PREFIX}/${PermissionsPrefix}/role-list`
 }
 
 /**
  * 账号接口
  */
 const AccountsUrl = {
-  Login: `${PREFIX}/accounts/login`
+  Login: `${PREFIX}/${AccountPrefix}/login`
 }
 
 /**
@@ -28,7 +38,7 @@ const ModuleUrl = {
   /**
    * 默认模块路径
    */
-  Default: `${PREFIX}/modules`
+  Default: `${PREFIX}/${ModulesPrefix}`
 }
 
 /**
@@ -38,11 +48,11 @@ const MenuUrl = {
   /**
    * 默认菜单路径
    */
-  Default: `${PREFIX}/menus`,
+  Default: `${PREFIX}/${MenusPrefix}`,
   /**
    * 批量删除
    */
-  DeleteBatch: `${PREFIX}/menus/delete-batch`
+  DeleteBatch: `${PREFIX}/${MenusPrefix}/delete-batch`
 }
 
 /**
@@ -52,15 +62,15 @@ const RoleUrl = {
   /**
    * 默认权限路径
    */
-  Default: `${PREFIX}/roles`,
+  Default: `${PREFIX}/${RolesPrefix}`,
   /**
    * 获取角色
    */
-  Permissions: `${PREFIX}/roles/permissions`,
+  Permissions: `${PREFIX}/${RolesPrefix}/permissions`,
   /**
    * 获取所有角色
    */
-  All: `${PREFIX}/roles/all`
+  All: `${PREFIX}/${RolesPrefix}/all`
 }
 
 /**

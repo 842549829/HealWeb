@@ -1,4 +1,3 @@
-import request from '@/axios'
 import { AuthorizationHttpRequest } from '@/http/index'
 import { ApiUrls } from '../urls/index'
 import type { MenuCreateDto, MenuDto, MenuListDto, MenuUpdateDto } from './type'
@@ -82,8 +81,4 @@ export class MenuHttpRequest {
       }
     })
   }
-}
-
-export const getMenuListApi = () => {
-  return request.get({ url: '/mock/menu/list' })
 }
