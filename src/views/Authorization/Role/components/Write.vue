@@ -7,18 +7,20 @@ import { useI18n } from '@/hooks/web/useI18n'
 import { ElTree, ElCheckboxGroup, ElCheckbox } from 'element-plus'
 import { PermissionHttpRequest } from '@/api/permission/index'
 import type { RolePermissionTreeDto } from '@/api/permission/type'
-import { filter, eachTree } from '@/utils/tree'
-import { findIndex } from '@/utils'
+import { filter } from '@/utils/tree'
+import { RoleHttpRequest } from '@/api/role/index'
+import { IdentityRoleDto } from '@/api/role/type'
 
 const { t } = useI18n()
 
 const { required } = useValidator()
 
 const permissionHttpRequest = new PermissionHttpRequest()
+const roleHttpRequest = new RoleHttpRequest()
 
 const props = defineProps({
   currentRow: {
-    type: Object as PropType<any>,
+    type: Object as PropType<IdentityRoleDto>,
     default: () => null
   }
 })
@@ -64,16 +66,19 @@ const formSchema = ref<FormSchema[]>([
                   <ElTree
                     ref={treeRef}
                     show-checkbox
-                    node-key="id"
+                    node-key="permissionName"
                     highlight-current
-                    check-strictly
                     expand-on-click-node={false}
                     data={treeData.value}
                     onNode-click={nodeClick}
+                    onNode-expand={handleExpand}
                   >
                     {{
-                      default: (data) => {
-                        return <span>{data.data.meta.title}</span>
+                      default: (data: any) => {
+                        const isLastNode = data.data.type === 3
+                        return (
+                          <span class={isLastNode ? 'leaf-node' : ''}>{data.data.meta.title}</span>
+                        )
                       }
                     }}
                   </ElTree>
@@ -100,9 +105,29 @@ const formSchema = ref<FormSchema[]>([
   }
 ])
 
+// 更新树的css
+const changeCss = () => {
+  const levelNames = document.getElementsByClassName('leaf-node') // levelname是上面的最底层节点的名字
+  for (let i = 0; i < levelNames.length; i++) {
+    // cssFloat 兼容 ie6-8  styleFloat 兼容ie9及标准浏览器
+    console.log(levelNames[i])
+    const levelName = levelNames[i].parentNode?.parentNode as HTMLElement
+    levelName.style.cssFloat = 'left' // 最底层的节点，包括多选框和名字都让他左浮动
+  }
+}
+
 const currentTreeData = ref()
 const nodeClick = (treeData: any) => {
   currentTreeData.value = treeData
+}
+
+// 节点被展开时触发的事件
+const handleExpand = () => {
+  //节点被展开时触发的事件
+  //因为该函数执行在renderContent函数之前，所以得加this.$nextTick()
+  nextTick(() => {
+    changeCss()
+  })
 }
 
 const rules = reactive({
@@ -116,38 +141,19 @@ const { setValues, getFormData, getElFormExpose } = formMethods
 
 const treeData = ref<RolePermissionTreeDto[]>([])
 const getMenuList = async () => {
-  const res = await permissionHttpRequest.getAllRolePermissionTreeListAsync()
   // 获取当前角色拥有的权限
+  const res = await permissionHttpRequest.getAllRolePermissionTreeListAsync()
   if (res) {
+    // 设置权限树
     treeData.value = res
-
     // 根据当前角色去session中的权限去设置tree的选中
     if (!props.currentRow) return
-    await nextTick()
-    const checked: any[] = []
-    eachTree(props.currentRow.menu, (v) => {
-      checked.push({
-        id: v.id,
-        permission: v.meta?.permission || []
-      })
-    })
-    eachTree(treeData.value, (v) => {
-      const index = findIndex(checked, (item) => {
-        return item.permissionName === v.permissionName
-      })
-      if (index > -1) {
-        const meta = { ...v.meta }
-        meta.permission = checked[index].permission
-        v.meta = meta
+    const checked: string[] = await roleHttpRequest.getPermissionsAsync(unref(props.currentRow).id)
+    nextTick(() => {
+      for (const item of checked) {
+        unref(treeRef)?.setChecked(item, true, false)
       }
     })
-    for (const item of checked) {
-      unref(treeRef)?.setChecked(item.permissionName, true, false)
-    }
-    // unref(treeRef)?.setCheckedKeys(
-    //   checked.map((v) => v.id),
-    //   false
-    // )
   }
 }
 getMenuList()

@@ -59,11 +59,12 @@ export class RoleHttpRequest {
 
   /**
    * 获取角色权限
+   * @param roleId 角色id
    * @returns string[]
    */
-  public async getPermissionsAsync(): Promise<string[]> {
+  public async getPermissionsAsync(roleId: string): Promise<string[]> {
     const client = this.getClinet()
-    return await client.get(ApiUrls.Role.Permissions)
+    return await client.get(`${ApiUrls.Role.Permissions}/${roleId}`)
   }
 
   /**
