@@ -4,12 +4,13 @@ import { useForm } from '@/hooks/web/useForm'
 import { PropType, reactive, watch, ref, unref, nextTick } from 'vue'
 import { useValidator } from '@/hooks/web/useValidator'
 import { useI18n } from '@/hooks/web/useI18n'
-import { ElTree, ElCheckboxGroup, ElCheckbox } from 'element-plus'
+import { ElTree, ElCheckboxGroup, ElCheckbox, ElMessage } from 'element-plus'
 import { PermissionHttpRequest } from '@/api/permission/index'
 import type { RolePermissionTreeDto } from '@/api/permission/type'
 import { filter } from '@/utils/tree'
 import { RoleHttpRequest } from '@/api/role/index'
-import { IdentityRoleDto } from '@/api/role/type'
+import { IdentityRoleDto, UpdatePermissionDto } from '@/api/role/type'
+import { differ } from '@/utils/enumerable'
 
 const { t } = useI18n()
 
@@ -105,12 +106,23 @@ const formSchema = ref<FormSchema[]>([
   }
 ])
 
+// 加载角色权限
+const beforePermissions: Array<string> = []
+
+// 加载操作前选中数据
+const initDefaultCheckedkeys = () => {
+  const checkedNodes = unref(treeRef)?.getCheckedNodes(false, true)
+  for (let index = 0; index < checkedNodes.length; index++) {
+    const item = checkedNodes[index]
+    beforePermissions.push(item.permissionName)
+  }
+}
+
 // 更新树的css
 const changeCss = () => {
   const levelNames = document.getElementsByClassName('leaf-node') // levelname是上面的最底层节点的名字
   for (let i = 0; i < levelNames.length; i++) {
     // cssFloat 兼容 ie6-8  styleFloat 兼容ie9及标准浏览器
-    console.log(levelNames[i])
     const levelName = levelNames[i].parentNode?.parentNode as HTMLElement
     levelName.style.cssFloat = 'left' // 最底层的节点，包括多选框和名字都让他左浮动
   }
@@ -153,10 +165,40 @@ const getMenuList = async () => {
       for (const item of checked) {
         unref(treeRef)?.setChecked(item, true, false)
       }
+      initDefaultCheckedkeys()
     })
   }
 }
 getMenuList()
+
+const getUpdatePermissionDto = () => {
+  // 选中的的数据
+  const checkedNodes = treeRef.value!.getCheckedNodes(false, true)
+  const permissions = new Array<UpdatePermissionDto>()
+  for (let index = 0; index < checkedNodes.length; index++) {
+    const item = checkedNodes[index]
+    permissions.push({ name: item.permissionName, isGranted: true })
+  }
+  if (permissions.length <= 0) {
+    ElMessage({
+      showClose: true,
+      message: '请选择角色权限',
+      type: 'error'
+    })
+    return null
+  }
+
+  const afterPermissions = permissions.map((item) => item.name)
+  const differResult = differ(beforePermissions, afterPermissions)
+  const result = new Array<UpdatePermissionDto>()
+  differResult.after.forEach((item) => {
+    result.push({ name: item, isGranted: true })
+  })
+  differResult.before.forEach((item) => {
+    result.push({ name: item, isGranted: false })
+  })
+  return result
+}
 
 const submit = async () => {
   const elForm = await getElFormExpose()
@@ -164,13 +206,15 @@ const submit = async () => {
     console.log(err)
   })
   if (valid) {
+    const d = getUpdatePermissionDto()
+    console.log(d)
+
     const formData = await getFormData()
     const checkedKeys = unref(treeRef)?.getCheckedKeys() || []
     const data = filter(unref(treeData), (item: any) => {
       return checkedKeys.includes(item.id)
     })
     formData.menu = data || []
-    console.log(formData)
     return formData
   }
 }
