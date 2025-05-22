@@ -13,7 +13,7 @@ import { Dialog } from '@/components/Dialog'
 import { BaseButton } from '@/components/Button'
 import { RoleHttpRequest } from '@/api/role/index'
 import { ActionType, FilterInput, PagedResultDto } from '@/api/common/type'
-import { IdentityRoleDto } from '@/api/role/type'
+import { IdentityRoleDto, RoleCreateDto, RoleUpdateDto } from '@/api/role/type'
 
 // 多语言配装
 const { t } = useI18n()
@@ -52,7 +52,7 @@ const { tableRegister, tableState, tableMethods } = useTable({
 
 // 解构表格数据
 const { dataList, loading, total, currentPage, pageSize } = tableState
-const { getList } = tableMethods
+const { getList, getElTableExpose, delList } = tableMethods
 
 // 渲染tag
 const renderTag = (enable?: boolean) => {
@@ -131,7 +131,9 @@ const tableColumns = reactive<TableColumn[]>([
             <BaseButton type="success" onClick={() => action(row, 'detail')}>
               {t('exampleDemo.detail')}
             </BaseButton>
-            <BaseButton type="danger">{t('exampleDemo.del')}</BaseButton>
+            <BaseButton type="danger" onClick={() => delData(row)}>
+              {t('exampleDemo.del')}
+            </BaseButton>
           </>
         )
       }
@@ -170,7 +172,7 @@ const writeRef = ref<ComponentRef<typeof Write>>()
 // 保存loading
 const saveLoading = ref(false)
 // 操作(编辑/详情)
-const action = (row: any, type: ActionType) => {
+const action = (row: IdentityRoleDto, type: ActionType) => {
   dialogTitle.value = t(type === 'edit' ? 'exampleDemo.edit' : 'exampleDemo.detail')
   actionType.value = type
   currentRow.value = row
@@ -189,16 +191,43 @@ const AddAction = () => {
   actionType.value = ''
 }
 
+const delData = async (row: IdentityRoleDto | null) => {
+  const elTableExpose = await getElTableExpose()
+  ids.value = row
+    ? [row.id]
+    : elTableExpose?.getSelectionRows().map((v: IdentityRoleDto) => v.id) || []
+  loading.value = true
+  await delList(unref(ids).length).finally(() => {
+    loading.value = false
+  })
+}
+
 // 保存操作
 const save = async () => {
   const write = unref(writeRef)
   const formData = await write?.submit()
   if (formData) {
     saveLoading.value = true
-    setTimeout(() => {
+    try {
+      if (actionType.value === 'edit') {
+        const roleUpdateDto = formData as RoleUpdateDto
+        await roleHttpRequest.updateAsync(currentRow.value!.id, roleUpdateDto)
+      } else if (actionType.value === '') {
+        const roleCreateDto = formData as RoleCreateDto
+        // 数据权限暂时先写死全部数据权限
+        roleCreateDto.extraProperties = {
+          DataPermission: 0
+        }
+        await roleHttpRequest.createAsync(formData as RoleCreateDto)
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
       saveLoading.value = false
       dialogVisible.value = false
-    }, 1000)
+    }
+
+    getList()
   }
 }
 </script>

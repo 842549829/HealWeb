@@ -22,8 +22,6 @@ const menuHttpRequest = new MenuHttpRequest()
 
 // 删除的ids
 const ids = ref<string[]>([])
-// 删除的loading
-const delLoading = ref(false)
 
 // useTable
 const { tableRegister, tableState, tableMethods } = useTable({
@@ -147,9 +145,9 @@ const action = async (row: MenuListDto, type: ActionType) => {
 const delData = async (row: MenuListDto | null) => {
   const elTableExpose = await getElTableExpose()
   ids.value = row ? [row.id] : elTableExpose?.getSelectionRows().map((v: MenuListDto) => v.id) || []
-  delLoading.value = true
+  loading.value = true
   await delList(unref(ids).length).finally(() => {
-    delLoading.value = false
+    loading.value = false
   })
 }
 

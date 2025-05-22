@@ -4,10 +4,9 @@ import { useForm } from '@/hooks/web/useForm'
 import { PropType, reactive, watch, ref, unref, nextTick } from 'vue'
 import { useValidator } from '@/hooks/web/useValidator'
 import { useI18n } from '@/hooks/web/useI18n'
-import { ElTree, ElCheckboxGroup, ElCheckbox, ElMessage } from 'element-plus'
+import { ElCheckbox, ElTree, ElMessage } from 'element-plus'
 import { PermissionHttpRequest } from '@/api/permission/index'
 import type { RolePermissionTreeDto } from '@/api/permission/type'
-import { filter } from '@/utils/tree'
 import { RoleHttpRequest } from '@/api/role/index'
 import { IdentityRoleDto, UpdatePermissionDto } from '@/api/role/type'
 import { differ } from '@/utils/enumerable'
@@ -30,29 +29,36 @@ const treeRef = ref<typeof ElTree>()
 
 const formSchema = ref<FormSchema[]>([
   {
-    field: 'roleName',
+    field: 'name',
     label: t('role.roleName'),
     component: 'Input'
   },
   {
-    field: 'status',
-    label: t('menu.status'),
-    component: 'Select',
+    field: 'isDefault',
+    label: t('role.isDefault'),
+    component: 'Switch',
     componentProps: {
-      options: [
-        {
-          label: t('userDemo.disable'),
-          value: 0
-        },
-        {
-          label: t('userDemo.enable'),
-          value: 1
-        }
-      ]
+      disabled: false
     }
   },
   {
-    field: 'menu',
+    field: 'isStatic',
+    label: t('role.isStatic'),
+    component: 'Switch',
+    componentProps: {
+      disabled: false
+    }
+  },
+  {
+    field: 'isPublic',
+    label: t('role.isPublic'),
+    component: 'Switch',
+    componentProps: {
+      disabled: false
+    }
+  },
+  {
+    field: 'permissions',
     label: t('role.menu'),
     colProps: {
       span: 24
@@ -62,16 +68,24 @@ const formSchema = ref<FormSchema[]>([
         default: () => {
           return (
             <>
-              <div class="flex w-full">
+              <div class="flex w-full items-center p-2">
+                <div class="mr-4">
+                  <ElCheckbox
+                    value={checked.value}
+                    onUpdate:modelValue={handleToggleSelection}
+                    label="全选/反选"
+                    size="large"
+                  />
+                </div>
                 <div class="flex-1">
                   <ElTree
                     ref={treeRef}
                     show-checkbox
                     node-key="permissionName"
                     highlight-current
+                    check-strictly
                     expand-on-click-node={false}
                     data={treeData.value}
-                    onNode-click={nodeClick}
                     onNode-expand={handleExpand}
                   >
                     {{
@@ -84,19 +98,6 @@ const formSchema = ref<FormSchema[]>([
                     }}
                   </ElTree>
                 </div>
-                <div class="flex-1">
-                  {unref(currentTreeData) && unref(currentTreeData)?.permissionList ? (
-                    <ElCheckboxGroup v-model={unref(currentTreeData).meta.permission}>
-                      {unref(currentTreeData)?.permissionList.map((v: any) => {
-                        return (
-                          <ElCheckbox label={v.value} key={v.value}>
-                            {v.label}
-                          </ElCheckbox>
-                        )
-                      })}
-                    </ElCheckboxGroup>
-                  ) : null}
-                </div>
               </div>
             </>
           )
@@ -105,6 +106,28 @@ const formSchema = ref<FormSchema[]>([
     }
   }
 ])
+
+const checked = ref(false)
+function getAllNodeKeys(nodeList: any) {
+  const keys: string[] = []
+  function traverse(nodes: any) {
+    for (const node of nodes) {
+      keys.push(node.permissionName)
+      if (node.children) {
+        traverse(node.children)
+      }
+    }
+  }
+  traverse(nodeList)
+  return keys
+}
+
+function handleToggleSelection() {
+  const allKeys = getAllNodeKeys(treeData.value)
+  const currentCheckedKeys = unref(treeRef)?.getCheckedKeys()
+  const invertKeys = allKeys.filter((key) => !currentCheckedKeys.includes(key))
+  unref(treeRef)?.setCheckedKeys(invertKeys)
+}
 
 // 加载角色权限
 const beforePermissions: Array<string> = []
@@ -128,11 +151,6 @@ const changeCss = () => {
   }
 }
 
-const currentTreeData = ref()
-const nodeClick = (treeData: any) => {
-  currentTreeData.value = treeData
-}
-
 // 节点被展开时触发的事件
 const handleExpand = () => {
   //节点被展开时触发的事件
@@ -143,9 +161,7 @@ const handleExpand = () => {
 }
 
 const rules = reactive({
-  roleName: [required()],
-  role: [required()],
-  status: [required()]
+  name: [required()]
 })
 
 const { formRegister, formMethods } = useForm()
@@ -206,15 +222,9 @@ const submit = async () => {
     console.log(err)
   })
   if (valid) {
-    const d = getUpdatePermissionDto()
-    console.log(d)
-
+    const data = getUpdatePermissionDto()
     const formData = await getFormData()
-    const checkedKeys = unref(treeRef)?.getCheckedKeys() || []
-    const data = filter(unref(treeData), (item: any) => {
-      return checkedKeys.includes(item.id)
-    })
-    formData.menu = data || []
+    formData.permissions = data || []
     return formData
   }
 }

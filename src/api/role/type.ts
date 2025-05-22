@@ -69,7 +69,7 @@ export interface RoleDto {
  * IdentityRoleCreateOrUpdateDtoBase 接口定义了创建或更新角色的基本信息。
  * 注意：以下属性的要求来源于原始C#代码中的属性注解。
  */
-export interface IdentityRoleCreateOrUpdateDtoBase {
+export interface IdentityRoleCreateOrUpdateDtoBase extends ExtensibleObject {
   /**
    * 角色名称。
    * - 必填（[Required]）
