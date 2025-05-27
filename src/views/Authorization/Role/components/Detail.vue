@@ -1,22 +1,23 @@
 <script setup lang="tsx">
-import { PropType, ref, unref } from 'vue'
+import { nextTick, PropType, ref, unref } from 'vue'
 import { Descriptions, DescriptionsSchema } from '@/components/Descriptions'
 import { ElTag, ElTree } from 'element-plus'
-import { findIndex } from '@/utils'
+import { PermissionHttpRequest } from '@/api/permission/index'
+import { RoleHttpRequest } from '@/api/role/index'
+import { IdentityRoleDto } from '@/api/role/type'
+import { useI18n } from '@/hooks/web/useI18n'
 
-defineProps({
+const { t } = useI18n()
+
+const permissionHttpRequest = new PermissionHttpRequest()
+const roleHttpRequest = new RoleHttpRequest()
+
+const props = defineProps({
   currentRow: {
-    type: Object as PropType<any>,
+    type: Object as PropType<IdentityRoleDto>,
     default: () => undefined
   }
 })
-
-const filterPermissionName = (value: string) => {
-  const index = findIndex(unref(currentTreeData)?.permissionList || [], (item) => {
-    return item.value === value
-  })
-  return (unref(currentTreeData)?.permissionList || [])[index].label ?? ''
-}
 
 const renderTag = (enable?: boolean) => {
   return <ElTag type={!enable ? 'danger' : 'success'}>{enable ? '启用' : '禁用'}</ElTag>
@@ -31,22 +32,31 @@ const nodeClick = (treeData: any) => {
 
 const treeData = ref<any[]>([])
 const getMenuList = async () => {
-  // const res = { data: { list: [] }
-  // if (res) {
-  //   treeData.value = res.data.list
-  //   await nextTick()
-  // }
+  // 获取当前角色拥有的权限
+  const res = await permissionHttpRequest.getAllRolePermissionTreeListAsync()
+  if (res) {
+    // 设置权限树
+    treeData.value = res
+    // 根据当前角色去session中的权限去设置tree的选中
+    if (!props.currentRow) return
+    const checked: string[] = await roleHttpRequest.getPermissionsAsync(unref(props.currentRow).id)
+    nextTick(() => {
+      for (const item of checked) {
+        unref(treeRef)?.setChecked(item, true, false)
+      }
+    })
+  }
 }
 getMenuList()
 
 const detailSchema = ref<DescriptionsSchema[]>([
   {
-    field: 'roleName',
-    label: '角色名称'
+    field: 'name',
+    label: t('role.roleName')
   },
   {
-    field: 'status',
-    label: '状态',
+    field: 'isDefault',
+    label: t('role.isDefault'),
     slots: {
       default: (data: any) => {
         return renderTag(data.status)
@@ -54,9 +64,22 @@ const detailSchema = ref<DescriptionsSchema[]>([
     }
   },
   {
-    field: 'remark',
-    label: '备注',
-    span: 24
+    field: 'isStatic',
+    label: t('role.isStatic'),
+    slots: {
+      default: (data: any) => {
+        return renderTag(data.status)
+      }
+    }
+  },
+  {
+    field: 'isPublic',
+    label: t('role.isPublic'),
+    slots: {
+      default: (data: any) => {
+        return renderTag(data.status)
+      }
+    }
   },
   {
     field: 'permissionList',
@@ -83,13 +106,6 @@ const detailSchema = ref<DescriptionsSchema[]>([
                     }
                   }}
                 </ElTree>
-              </div>
-              <div class="flex-1">
-                {unref(currentTreeData)
-                  ? unref(currentTreeData)?.meta?.permission?.map((v: string) => {
-                      return <ElTag class="ml-2 mt-2">{filterPermissionName(v)}</ElTag>
-                    })
-                  : null}
               </div>
             </div>
           </>

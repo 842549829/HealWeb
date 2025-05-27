@@ -210,6 +210,8 @@ export class HttpRequestOptions {
         } catch (error: any) {
           // 这里是AxiosError类型，所以一般我们只reject我们需要的响应即可
           console.log(error)
+          userStore.logout()
+          this.config.authorization?.routerPush?.()
           return Promise.reject(axiosError.response)
         } finally {
           responseInterceptorCatchConfig.refreshToken.isRefreshing = false
