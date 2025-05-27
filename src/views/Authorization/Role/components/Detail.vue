@@ -6,6 +6,9 @@ import { PermissionHttpRequest } from '@/api/permission/index'
 import { RoleHttpRequest } from '@/api/role/index'
 import { IdentityRoleDto } from '@/api/role/type'
 import { useI18n } from '@/hooks/web/useI18n'
+import { RolePermissionTreeDto, RolePermissionTreeShowDto } from '@/api/permission/type'
+import type { TreeNodeData } from 'element-plus/es/components/tree/src/tree.type'
+import type Node from 'element-plus/es/components/tree/src/model/node'
 
 const { t } = useI18n()
 
@@ -30,13 +33,39 @@ const nodeClick = (treeData: any) => {
   currentTreeData.value = treeData
 }
 
+// 递归转换数据结构将RolePermissionTreeDto[]==>RolePermissionTreeShowDto[]并且设置disabled并且设置isPenultimate
+const setTreeDisabledPenultimate = (
+  nodes: RolePermissionTreeDto[],
+  disabled = true
+): RolePermissionTreeShowDto[] =>
+  nodes.map((node) => {
+    const hasChildren = !!(node.children && node.children.length > 0)
+    const isPenultimate =
+      hasChildren &&
+      node.children?.every((child) => !child.children || (child.children?.length ?? 0) === 0)
+
+    return {
+      ...node,
+      disabled,
+      isPenultimate,
+      children: hasChildren ? setTreeDisabledPenultimate(node.children!, disabled) : undefined
+    }
+  })
+
+// 自定义节点样式
+const customNodeClass = ({ isPenultimate }: TreeNodeData, _: Node) =>
+  isPenultimate ? 'is-penultimate' : ''
+
 const treeData = ref<any[]>([])
 const getMenuList = async () => {
   // 获取当前角色拥有的权限
-  const res = await permissionHttpRequest.getAllRolePermissionTreeListAsync()
+  const res: RolePermissionTreeDto[] =
+    await permissionHttpRequest.getAllRolePermissionTreeListAsync()
   if (res) {
     // 设置权限树
-    treeData.value = res
+    const result = setTreeDisabledPenultimate(res)
+    console.log(result)
+    treeData.value = result
     // 根据当前角色去session中的权限去设置tree的选中
     if (!props.currentRow) return
     const checked: string[] = await roleHttpRequest.getPermissionsAsync(unref(props.currentRow).id)
@@ -93,16 +122,18 @@ const detailSchema = ref<DescriptionsSchema[]>([
               <div class="flex-1">
                 <ElTree
                   ref={treeRef}
-                  node-key="id"
-                  props={{ children: 'children', label: 'title' }}
+                  show-checkbox
+                  node-key="permissionName"
+                  default-expand-all
+                  props={{ children: 'children', disabled: 'disabled', class: customNodeClass }}
                   highlight-current
                   expand-on-click-node={false}
                   data={treeData.value}
                   onNode-click={nodeClick}
                 >
                   {{
-                    default: (data) => {
-                      return <span>{data?.data?.title}</span>
+                    default: (data: any) => {
+                      return <span>{data.data.meta.title}</span>
                     }
                   }}
                 </ElTree>
@@ -119,3 +150,22 @@ const detailSchema = ref<DescriptionsSchema[]>([
 <template>
   <Descriptions :schema="detailSchema" :data="currentRow || {}" />
 </template>
+
+<style lang="less" scoped>
+// :deep(.is-penultimate > .el-tree-node__content) {
+//   color: #626aef;
+// }
+
+:deep(.is-penultimate > .el-tree-node__children > div) {
+  display: inline-block;
+  margin-right: 4px;
+
+  &:not(:first-child) .el-tree-node__content {
+    padding-left: 0 !important;
+  }
+
+  .el-tree-node__content {
+    padding-right: 16px;
+  }
+}
+</style>

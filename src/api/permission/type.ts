@@ -8,55 +8,63 @@ export interface RolePermissionTreeDto {
   /**
    * 权限名称
    */
-  PermissionName: string
+  permissionName: string
 
   /**
    * 父级权限名称
    */
-  ParentName?: string | null
+  pathResolvearentName?: string | null
 
   /**
    * 权限类型
    */
-  Type?: PermissionType | null
+  type?: PermissionType | null
 
   /**
    * 标签
    */
-  Tag: number
+  tag: number
 
   /**
    * 权限前端路由
    */
-  Path: string
+  path: string
 
   /**
    * 路由名称，用于编程式导航（如 router.push({ name: 'Home' })
    */
-  Name?: string
+  name?: string
 
   /**
    * 与该路由对应的组件
    */
-  Component: string
+  component: string
 
   /**
    * 重定向到另一个路径（可以是字符串或函数）
    */
-  Redirect?: string
+  redirect?: string
 
   /**
    * 别名，访问 `/home` 时会匹配 `/` 的路由
    */
-  Alias?: string
+  alias?: string
 
   /**
    * 路由元信息，用于传递任何你想传递的数据
    */
-  Meta?: RouteMetaCustom
+  meta?: RouteMetaCustom
 
   /**
    * 子路由
    */
-  Children?: RolePermissionTreeDto[]
+  children?: RolePermissionTreeDto[]
+}
+
+export interface RolePermissionTreePenultimateDto extends RolePermissionTreeDto {
+  isPenultimate?: boolean
+}
+
+export interface RolePermissionTreeShowDto extends RolePermissionTreePenultimateDto {
+  disabled: boolean
 }
