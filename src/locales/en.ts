@@ -551,7 +551,11 @@ export default {
     enable: 'Enable',
     disable: 'Disable',
     superiorDepartment: 'Superior department',
-    filter: 'Filter'
+    filter: 'Filter',
+    surname: 'Surname',
+    name: 'Name',
+    phoneNumber: 'Phone Number',
+    creationTime: 'Creation Time'
   },
   menu: {
     menuName: 'Menu name',

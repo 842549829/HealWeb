@@ -1,20 +1,18 @@
 <script setup lang="ts">
-import { onMounted, PropType, ref } from 'vue'
+import { PropType } from 'vue'
+import { DepartmentUserItem } from '@/api/department/types'
 import { Descriptions, DescriptionsSchema } from '@/components/Descriptions'
 
 defineProps({
-  id: {
-    type: String as PropType<string>,
-    required: true
+  currentRow: {
+    type: Object as PropType<DepartmentUserItem>,
+    default: () => undefined
   },
   detailSchema: {
     type: Array as PropType<DescriptionsSchema[]>,
     default: () => []
   }
 })
-const currentRow = ref()
-
-onMounted(() => {})
 </script>
 
 <template>

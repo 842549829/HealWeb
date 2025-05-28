@@ -542,7 +542,11 @@ export default {
     disable: '禁用',
     // 上级部门
     superiorDepartment: '上级部门',
-    filter: '筛选'
+    filter: '筛选',
+    surname: '姓',
+    name: '名',
+    phoneNumber: '手机',
+    creationTime: '创建时间'
   },
   menu: {
     menuName: '菜单名称',

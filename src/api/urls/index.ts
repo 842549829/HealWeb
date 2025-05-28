@@ -5,6 +5,7 @@ const ModulesPrefix = 'modules'
 const MenusPrefix = 'menus'
 const RolesPrefix = 'roles'
 const AccountPrefix = 'accounts'
+const UsersPrefix = 'users'
 
 /**
  * 权限接口
@@ -74,6 +75,48 @@ const RoleUrl = {
 }
 
 /**
+ * 用户接口
+ */
+const UserUrl = {
+  /**
+   * 默认用户路径
+   */
+  Default: `${PREFIX}/${UsersPrefix}`,
+  /**
+   * 获取角色
+   */
+  Roles: `${PREFIX}/${UsersPrefix}/{0}/roles`,
+  /**
+   * 获取可分配绝
+   */
+  RolesAssignable: `${PREFIX}/${UsersPrefix}/roles-assignable`,
+  /**
+   * 详情
+   */
+  Detail: `${PREFIX}/${UsersPrefix}/{0}/detail`,
+  /**
+   * 根据用户名查找用户
+   */
+  FindByUserName: `${PREFIX}/${UsersPrefix}/by-username/{0}`,
+  /**
+   * 根据邮箱查找用户
+   */
+  FindByEmail: `${PREFIX}/${UsersPrefix}/by-email/{0}`,
+  /**
+   * 更新头像
+   */
+  Avatar: `${PREFIX}/${UsersPrefix}/{0}/avatar`,
+  /**
+   * 获取用户列表
+   */
+  List: `${PREFIX}/${UsersPrefix}/user-select`,
+  /**
+   * 获取角色列表
+   */
+  RoleList: `${PREFIX}/${UsersPrefix}/role-list`
+}
+
+/**
  * 接口地址
  */
 export const ApiUrls = {
@@ -96,5 +139,9 @@ export const ApiUrls = {
   /**
    * 角色接口
    */
-  Role: RoleUrl
+  Role: RoleUrl,
+  /**
+   * 用户接口
+   */
+  User: UserUrl
 }
