@@ -71,6 +71,11 @@ export enum PermissionType {
  */
 export enum IdentityType {
   /**
+   * 其他
+   */
+  Other = 0,
+
+  /**
    * 医护人员
    */
   Doctor = 1,

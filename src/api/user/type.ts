@@ -1,3 +1,4 @@
+import { IdentityType } from '../common/enum'
 import {
   EntityDto,
   ExtensibleFullAuditedEntityDto,
@@ -28,7 +29,7 @@ export interface IdentityUserDto
         /**
          * 身份标识
          */
-        Identity?: number
+        Identity?: IdentityType
       }
     > {
   /**
@@ -185,7 +186,7 @@ export interface IdentityUserCreateOrUpdateDtoBase
     /**
      * 身份标识
      */
-    Identity?: number
+    Identity?: IdentityType
   }> {
   /**
    * 用户名（必填）
@@ -266,9 +267,4 @@ export interface IdentityUserUpdateDto extends IdentityUserCreateOrUpdateDtoBase
 /**
  * 用户更新 DTO
  */
-export interface UserUpdateDto extends IdentityUserUpdateDto {
-  /**
-   * 组织ID（机构ID）
-   */
-  organizationId: string // Guid 在前端通常用 string 表示 UUID
-}
+export type UserUpdateDto = IdentityUserUpdateDto
