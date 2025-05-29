@@ -6,7 +6,7 @@ import { useValidator } from '@/hooks/web/useValidator'
 import { useI18n } from '@/hooks/web/useI18n'
 import { cloneDeep } from 'lodash-es'
 import { MenuDto } from '@/api/menu/type'
-import { MultiTenancySides, PermissionType } from '@/api/common/type'
+import { MultiTenancySides, PermissionType } from '@/api/common/enum'
 import { generateEnumOptionsLocales } from '@/utils/enumUtils'
 
 const { t } = useI18n()

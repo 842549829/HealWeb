@@ -1,4 +1,5 @@
-import type { EntityDto, ModuleTag } from '../common/type'
+import type { EntityDto } from '../common/type'
+import type { ModuleTag } from '../common/enum'
 
 /**
  * 模块创建DTO

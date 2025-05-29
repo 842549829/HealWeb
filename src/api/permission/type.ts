@@ -1,5 +1,5 @@
 import { RouteMetaCustom } from 'types/router'
-import { PermissionType } from '../common/type'
+import { PermissionType } from '../common/enum'
 
 /**
  * 角色权限树

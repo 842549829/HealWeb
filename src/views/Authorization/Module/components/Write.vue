@@ -5,7 +5,7 @@ import { PropType, reactive, watch } from 'vue'
 import { useValidator } from '@/hooks/web/useValidator'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ModuleListDto } from '@/api/module/type'
-import { ModuleTag } from '@/api/common/type'
+import { ModuleTag } from '@/api/common/enum'
 import { cloneDeep } from 'lodash-es'
 import { generateEnumOptionsLocales } from '@/utils/enumUtils'
 

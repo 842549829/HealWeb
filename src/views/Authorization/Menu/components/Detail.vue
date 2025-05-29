@@ -4,7 +4,7 @@ import { Descriptions, DescriptionsSchema } from '@/components/Descriptions'
 import { Icon } from '@/components/Icon'
 import { ElTag } from 'element-plus'
 import { useI18n } from '@/hooks/web/useI18n'
-import { MultiTenancySides, PermissionType } from '@/api/common/type'
+import { MultiTenancySides, PermissionType } from '@/api/common/enum'
 import { getEnumKeyByValue } from '@/utils/enumUtils'
 import { EnumShow } from '@/components/Enums/index'
 

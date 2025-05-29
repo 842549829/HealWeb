@@ -1,4 +1,5 @@
-import { EntityDto, MultiTenancySides, PermissionType } from '../common/type'
+import { EntityDto } from '../common/type'
+import { MultiTenancySides, PermissionType } from '../common/enum'
 
 /**
  * 菜单创建或更新 DTO 接口定义
