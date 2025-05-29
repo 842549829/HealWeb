@@ -103,7 +103,7 @@ export enum OrganizationType {
   /**
    * 机构
    */
-  Institution = 1,
+  Organization = 1,
 
   /**
    * 院区
