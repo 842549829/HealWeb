@@ -158,7 +158,7 @@ const handleCardClick = async (module: ModuleHomeListDto) => {
       <ElRow class="p-5" :gutter="24">
         <!-- 加载中 -->
         <template v-if="loading">
-          <ElCol v-for="n in 10" :key="n" :xs="12" :sm="8" :md="6" :lg="4.8" class="mb-6">
+          <ElCol v-for="n in 12" :key="n" :xs="12" :sm="8" :md="6" :lg="4.8" class="mb-6">
             <ElCard class="skeleton-card w-full h-150px flex items-center justify-center">
               <ElSkeleton :rows="3" animated />
             </ElCard>
