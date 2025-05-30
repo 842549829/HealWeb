@@ -52,7 +52,7 @@ const tableColumns = reactive<TableColumn[]>([
   },
   {
     field: 'name',
-    label: t('module.name'),
+    label: t('module.dislayName'),
     slots: {
       default: (data: any) => {
         const name = data.row.name
@@ -62,7 +62,7 @@ const tableColumns = reactive<TableColumn[]>([
   },
   {
     field: 'dislayName',
-    label: t('module.dislayName'),
+    label: t('module.name'),
     slots: {
       default: (data: any) => {
         const dislayName = data.row.dislayName
