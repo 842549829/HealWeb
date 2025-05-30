@@ -706,14 +706,6 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
     },
     children: [
       {
-        path: 'department',
-        component: () => import('@/views/Authorization/Department/Department.vue'),
-        name: 'Department',
-        meta: {
-          title: t('router.department')
-        }
-      },
-      {
         path: 'user',
         component: () => import('@/views/Authorization/User/User.vue'),
         name: 'User',
