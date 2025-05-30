@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ElCard, ElRow, ElCol, ElInput } from 'element-plus'
+import { ElCard, ElRow, ElCol, ElInput, ElSkeleton } from 'element-plus'
 import { Icon } from '@/components/Icon'
 import { computed, ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
@@ -31,6 +31,8 @@ const searchText = ref('')
 
 const redirect = ref<string>('')
 
+const loading = ref(false)
+
 watch(
   () => currentRoute.value,
   (route: RouteLocationNormalizedLoaded) => {
@@ -44,10 +46,13 @@ watch(
 // 挂载时执行
 onMounted(async () => {
   try {
+    loading.value = true
     cardList.value = await homeHttpRequest.getModuleHomeListAsync()
   } catch (error) {
     console.error('Failed to fetch module list:', error)
     cardList.value = [] // Set empty array as fallback
+  } finally {
+    loading.value = false
   }
 })
 
@@ -151,7 +156,15 @@ const handleCardClick = async (module: ModuleHomeListDto) => {
       </ElRow>
 
       <ElRow class="p-5" :gutter="24">
-        <template v-if="filteredCardList?.length">
+        <!-- 加载中 -->
+        <template v-if="loading">
+          <ElCol v-for="n in 10" :key="n" :xs="12" :sm="8" :md="6" :lg="4.8" class="mb-6">
+            <ElCard class="skeleton-card w-full h-150px flex items-center justify-center">
+              <ElSkeleton :rows="3" animated />
+            </ElCard>
+          </ElCol>
+        </template>
+        <template v-else-if="filteredCardList?.length">
           <ElCol
             v-for="card in filteredCardList"
             :key="card.path"
@@ -182,7 +195,15 @@ const handleCardClick = async (module: ModuleHomeListDto) => {
 
 <style scoped>
 /* 移除之前的 el-select 相关样式 */
-:deep(.el-card) {
+:deep(.el-card.skeleton-card) {
+  /* 针对骨架屏卡片的样式 */
+  background-color: transparent !important;
+  border: none;
+  border-radius: initial !important;
+  backdrop-filter: none;
+}
+
+:deep(.el-card:not(.skeleton-card)) {
   cursor: pointer;
   background-color: rgb(64 158 255 / 80%) !important;
   border: none;
@@ -191,7 +212,7 @@ const handleCardClick = async (module: ModuleHomeListDto) => {
   transform-origin: center;
 }
 
-:deep(.el-card:hover) {
+:deep(.el-card:hover:not(.skeleton-card)) {
   transform: translateY(-5px);
   box-shadow: 0 15px 30px rgb(0 0 0 / 10%);
 }
