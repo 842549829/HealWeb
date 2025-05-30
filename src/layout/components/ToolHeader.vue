@@ -6,6 +6,7 @@ import { SizeDropdown } from '@/components/SizeDropdown'
 import { UserInfo } from '@/components/UserInfo'
 import { Screenfull } from '@/components/Screenfull'
 import { Breadcrumb } from '@/components/Breadcrumb'
+import { HomeHeart } from '@/components/HomeHeart'
 import { useAppStore } from '@/store/modules/app'
 import { useDesign } from '@/hooks/web/useDesign'
 
@@ -23,6 +24,9 @@ const hamburger = computed(() => appStore.getHamburger)
 
 // 全屏图标
 const screenfull = computed(() => appStore.getScreenfull)
+
+// 回到首页
+const homeHeart = computed(() => appStore.getHomeHeart)
 
 // 尺寸图标
 const size = computed(() => appStore.getSize)
@@ -53,6 +57,9 @@ export default defineComponent({
           </div>
         ) : undefined}
         <div class="h-full flex items-center">
+          {homeHeart.value ? (
+            <HomeHeart class="custom-hover" color="var(--top-header-text-color)"></HomeHeart>
+          ) : undefined}
           {screenfull.value ? (
             <Screenfull class="custom-hover" color="var(--top-header-text-color)"></Screenfull>
           ) : undefined}
