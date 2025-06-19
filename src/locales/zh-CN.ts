@@ -624,6 +624,14 @@ export default {
     isStatic: '静态角色',
     creationTime: '创建时间'
   },
+  organization: {
+    displayName: '组织名称',
+    phone: '联系电话',
+    email: '邮箱',
+    address: '地址',
+    description: '描述',
+    code: '编码'
+  },
   inputPasswordDemo: {
     title: '密码输入框',
     inputPasswordDes: '基于 ElementPlus 的 Input 组件二次封装'

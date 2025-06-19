@@ -104,6 +104,18 @@ const tableColumns = reactive<TableColumn[]>([
     type: 'index'
   },
   {
+    field: 'code',
+    label: t('organization.code')
+  },
+  {
+    field: 'displayName',
+    label: t('organization.displayName')
+  },
+  {
+    field: 'extraProperties.Phone',
+    label: t('organization.phone')
+  },
+  {
     field: 'action',
     label: t('userDemo.action'),
     width: 240,

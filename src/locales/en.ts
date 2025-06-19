@@ -634,6 +634,14 @@ export default {
     isStatic: 'Static Role',
     creationTime: 'Creation Time'
   },
+  organization: {
+    displayName: 'Organization Name',
+    phone: 'Phone',
+    email: 'Email',
+    address: 'Address',
+    description: 'Description',
+    code: 'Code'
+  },
   inputPasswordDemo: {
     title: 'InputPassword',
     inputPasswordDes: 'Secondary packaging of Input components based on ElementPlus'
