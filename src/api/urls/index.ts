@@ -6,6 +6,7 @@ const MenusPrefix = 'menus'
 const RolesPrefix = 'roles'
 const AccountPrefix = 'accounts'
 const UsersPrefix = 'users'
+const OrganizationsPrefix = 'organizations'
 
 /**
  * 权限接口
@@ -117,6 +118,24 @@ const UserUrl = {
 }
 
 /**
+ * 组织机构接口
+ */
+const OrganizationUrl = {
+  /**
+   * 默认组织机构路径
+   */
+  Default: `${PREFIX}/${OrganizationsPrefix}`,
+  /**
+   * 获取组织机构列表
+   */
+  Select: `${PREFIX}/${OrganizationsPrefix}/select`,
+  /**
+   * 获取组织机构树
+   */
+  Tree: `${PREFIX}/${OrganizationsPrefix}/tree`
+}
+
+/**
  * 接口地址
  */
 export const ApiUrls = {
@@ -143,5 +162,14 @@ export const ApiUrls = {
   /**
    * 用户接口
    */
-  User: UserUrl
+  User: UserUrl,
+  /**
+   * 组织机构接口
+   */
+  Organizations: {
+    /**
+     * 医院组织接口
+     */
+    Organization: OrganizationUrl
+  }
 }
