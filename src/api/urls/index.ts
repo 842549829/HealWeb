@@ -7,6 +7,8 @@ const RolesPrefix = 'roles'
 const AccountPrefix = 'accounts'
 const UsersPrefix = 'users'
 const OrganizationsPrefix = 'organizations'
+const CampusPrefix = 'campuses'
+const DepartmentsPrefix = 'departments'
 
 /**
  * 权限接口
@@ -136,6 +138,30 @@ const OrganizationUrl = {
 }
 
 /**
+ * 院区接口
+ */
+const CampusUrl = {
+  /**
+   * 默认组织机构路径
+   */
+  Default: `${PREFIX}/${CampusPrefix}`
+}
+
+/**
+ * 科室接口
+ */
+const DepartmentUrl = {
+  /**
+   * 默认组织机构路径
+   */
+  Default: `${PREFIX}/${DepartmentsPrefix}`,
+  /**
+   * 详情
+   */
+  Detail: `${PREFIX}/${DepartmentsPrefix}/detail`
+}
+
+/**
  * 接口地址
  */
 export const ApiUrls = {
@@ -170,6 +196,14 @@ export const ApiUrls = {
     /**
      * 医院组织接口
      */
-    Organization: OrganizationUrl
+    Organization: OrganizationUrl,
+    /**
+     * 院区接口
+     */
+    Campus: CampusUrl,
+    /**
+     * 科室接口
+     */
+    Department: DepartmentUrl
   }
 }

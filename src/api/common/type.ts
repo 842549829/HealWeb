@@ -199,3 +199,126 @@ export interface ExtensibleFullAuditedEntityDto<T, TExtra = any>
     IModificationAuditedObject,
     ExtensibleObject<TExtra>,
     IDeletionAuditedObject {}
+
+/**
+ * 创建审计属性接口
+ */
+export interface ICreationAuditedObjectDto extends IHasCreationTime, IMayHaveCreator {}
+
+/**
+ * 创建审计属性接口
+ */
+export interface IMayHaveCreatorNameDto {
+  /**
+   * 创建者名称
+   */
+  creatorName?: string
+}
+
+/**
+ * 创建审计属性接口
+ */
+export interface ICreationAuditedObjectExtensionDto
+  extends ICreationAuditedObjectDto,
+    IMayHaveCreatorNameDto {}
+
+/**
+ * 创建审计属性接口
+ */
+export interface ICreationAuditedObject extends IHasCreationTime, IMayHaveCreator {}
+
+/**
+ * 创建审计实体通用类型
+ */
+export interface CreationAuditedEntityDto<TPrimaryKey>
+  extends EntityDto<TPrimaryKey>,
+    ICreationAuditedObject {}
+
+/**
+ * 审计属性接口
+ */
+export interface IAuditedObject
+  extends ICreationAuditedObject,
+    IHasCreationTime,
+    IMayHaveCreator,
+    IModificationAuditedObject,
+    IHasModificationTime {}
+
+/**
+ * 审计实体通用类型
+ */
+export interface AuditedEntityDto<TPrimaryKey>
+  extends CreationAuditedEntityDto<TPrimaryKey>,
+    IAuditedObject {}
+
+/**
+ * 审计实体扩展通用类型
+ */
+export interface AuditedEntityExtensionDto<TPrimaryKey>
+  extends AuditedEntityDto<TPrimaryKey>,
+    ICreationAuditedObjectExtensionDto {}
+
+/**
+ * 编码属性接口
+ */
+export interface IHasCodeDto {
+  /**
+   * 编码
+   */
+  code: string
+}
+
+/**
+ * 名称接口
+ */
+export interface IHasNameDto {
+  /**
+   * 名称
+   */
+  name: string
+}
+
+/**
+ * 组织属性接口
+ */
+export interface IHasOrganizationDto {
+  /**
+   * 组织Code
+   */
+  organizationCode: string
+}
+
+/**
+ * 排序属性接口
+ */
+export interface IHasSortDto {
+  /**
+   * 排序值
+   */
+  sort: number
+}
+
+/**
+ * 描述属性接口
+ */
+export interface IMayHaveDescribeDto {
+  /**
+   * 描述
+   */
+  describe?: string
+}
+
+/**
+ * 并发控制戳接口
+ */
+export interface IHasConcurrencyStampDto {
+  /**
+   * 并发控制戳
+   */
+  concurrencyStamp: string
+}
+
+/**
+ * 全局唯一标识符类型
+ */
+export type Guid = string
