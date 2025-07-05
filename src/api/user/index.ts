@@ -12,7 +12,7 @@ import {
   UserUpdateDto
 } from './type'
 import { getUrlParameters, urlFormatString } from '@/utils/urlSearchParams'
-import { FilterInput, PagedResultDto } from '../common/type'
+import { FilterInput, PagedResultDto, SelectDto } from '../common/type'
 import { IdentityRoleDto, RoleDto } from '../role/type'
 
 /**
@@ -105,7 +105,7 @@ export class UserHttpRequest extends AuthorizationHttpRequest {
    * 获取可分配角色
    * @returns 可分配角色输出参数
    */
-  public async getAssignableRolesAsync(): Promise<IdentityRoleDto[]> {
+  public async getAssignableRolesAsync(): Promise<SelectDto[]> {
     const client = this.getClinet()
     return await client.get(ApiUrls.User.RolesAssignable)
   }

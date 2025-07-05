@@ -1,12 +1,15 @@
 <script setup lang="tsx">
 import { Form, FormSchema } from '@/components/Form'
 import { useForm } from '@/hooks/web/useForm'
-import { onMounted, PropType, reactive } from 'vue'
+import { ref, onMounted, PropType, reactive } from 'vue'
 import { useValidator } from '@/hooks/web/useValidator'
 import { useI18n } from '@/hooks/web/useI18n'
+import { UserHttpRequest } from '@/api/user/index'
+import { SelectDto } from '@/api/common/type'
 
 const { t } = useI18n()
 const { required } = useValidator()
+const userHttpRequest = new UserHttpRequest()
 
 const props = defineProps({
   id: {
@@ -15,6 +18,8 @@ const props = defineProps({
     default: undefined
   }
 })
+
+const roles = ref<SelectDto[]>()
 
 // 表格列定义
 const formSchema = reactive<FormSchema[]>([
@@ -47,6 +52,15 @@ const formSchema = reactive<FormSchema[]>([
     field: 'password',
     label: t('userDemo.password'),
     component: 'InputPassword'
+  },
+  {
+    field: 'roleNames',
+    label: t('userDemo.role'),
+    component: 'Select',
+    componentProps: {
+      multiple: true,
+      options: roles
+    }
   }
 ])
 
@@ -55,7 +69,7 @@ const rules = reactive({
 })
 
 const { formRegister, formMethods } = useForm()
-const { getFormData, getElFormExpose } = formMethods
+const { setValues, getFormData, getElFormExpose, setSchema } = formMethods
 
 const submit = async () => {
   const elForm = await getElFormExpose()
@@ -69,12 +83,25 @@ const submit = async () => {
 }
 
 // 组件挂载事件
-onMounted(() => {
-  const currentRow = props.id
-  if (currentRow) {
-    // 查询接口获取当前行数据
-    //setValues({})
+onMounted(async () => {
+  const currentId = props.id
+  if (currentId) {
+    // 编辑则查询数据并且绑定
+    const user = await userHttpRequest.getDetailAsync(currentId)
+    // 移除密码字段
+    setSchema([
+      {
+        field: 'password',
+        path: 'remove',
+        value: true
+      }
+    ])
+
+    setValues(user)
   }
+  // 获取所有角色
+  const roleList = await userHttpRequest.getAssignableRolesAsync()
+  roles.value = roleList
 })
 
 defineExpose({

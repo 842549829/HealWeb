@@ -70,11 +70,7 @@ const RoleUrl = {
   /**
    * 获取角色
    */
-  Permissions: `${PREFIX}/${RolesPrefix}/permissions`,
-  /**
-   * 获取所有角色
-   */
-  All: `${PREFIX}/${RolesPrefix}/all`
+  Permissions: `${PREFIX}/${RolesPrefix}/permissions`
 }
 
 /**
@@ -92,7 +88,7 @@ const UserUrl = {
   /**
    * 获取可分配绝
    */
-  RolesAssignable: `${PREFIX}/${UsersPrefix}/roles-assignable`,
+  RolesAssignable: `${PREFIX}/${UsersPrefix}/assignable-roles`,
   /**
    * 详情
    */

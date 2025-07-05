@@ -14,6 +14,7 @@ import { BaseButton } from '@/components/Button'
 import { RoleHttpRequest } from '@/api/role/index'
 import { ActionType, FilterInput, PagedResultDto } from '@/api/common/type'
 import { IdentityRoleDto, RoleCreateDto, RoleUpdateDto } from '@/api/role/type'
+import moment from 'moment'
 
 // 多语言配装
 const { t } = useI18n()
@@ -99,7 +100,13 @@ const tableColumns = reactive<TableColumn[]>([
   },
   {
     field: 'creationTime',
-    label: t('role.creationTime')
+    label: t('role.creationTime'),
+    slots: {
+      default: (data: any) => {
+        const row = data.row
+        return <>{moment(row.creationTime).format('YYYY-MM-DD HH:mm:ss')}</>
+      }
+    }
   },
   {
     field: 'status',

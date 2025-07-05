@@ -322,3 +322,18 @@ export interface IHasConcurrencyStampDto {
  * 全局唯一标识符类型
  */
 export type Guid = string
+
+/**
+ * 选择项数据传输对象
+ * 用于描述下拉选择框的选项。
+ */
+export interface SelectDto {
+  /**
+   * 值
+   */
+  value: string
+  /**
+   * 标签
+   */
+  label: string
+}

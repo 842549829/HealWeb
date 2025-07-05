@@ -49,15 +49,6 @@ export class RoleHttpRequest {
   }
 
   /**
-   * 获取角色(所有)
-   * @returns string[]
-   */
-  public async getAllListAsync(): Promise<string[]> {
-    const client = this.getClinet()
-    return await client.get(ApiUrls.Role.All)
-  }
-
-  /**
    * 获取角色权限
    * @param roleId 角色id
    * @returns string[]

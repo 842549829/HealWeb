@@ -57,7 +57,7 @@ export const constantRouterMap: AppRouteRecordRaw[] = [
     children: [
       {
         path: 'personal-center',
-        component: () => import('@/views/Personal/PersonalCenter/PersonalCenter.vue'),
+        component: () => import('@/views/Personnel/PersonalCenter/PersonalCenter.vue'),
         name: 'PersonalCenter',
         meta: {
           title: t('router.personalCenter'),

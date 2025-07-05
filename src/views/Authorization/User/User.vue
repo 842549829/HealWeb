@@ -13,6 +13,7 @@ import { BaseButton } from '@/components/Button'
 import { UserHttpRequest } from '@/api/user/index'
 import { ActionType, FilterInput, PagedResultDto } from '@/api/common/type'
 import { IdentityUserDto, UserCreateDto, UserUpdateDto } from '@/api/user/type'
+import moment from 'moment'
 
 // 多语言配装
 const { t } = useI18n()
@@ -78,7 +79,13 @@ const tableColumns = reactive<TableColumn[]>([
   },
   {
     field: 'creationTime',
-    label: t('userDemo.creationTime')
+    label: t('userDemo.creationTime'),
+    slots: {
+      default: (data: any) => {
+        const row = data.row
+        return <>{moment(row.creationTime).format('YYYY-MM-DD HH:mm:ss')}</>
+      }
+    }
   },
   {
     field: 'phoneNumber',
