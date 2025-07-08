@@ -65,7 +65,13 @@ const formSchema = reactive<FormSchema[]>([
 ])
 
 const rules = reactive({
-  userName: [required()]
+  userName: [required()],
+  roleNames: [required()],
+  surname: [required()],
+  name: [required()],
+  email: [required()],
+  phoneNumber: [required()],
+  password: props.id ? [] : [required()]
 })
 
 const { formRegister, formMethods } = useForm()

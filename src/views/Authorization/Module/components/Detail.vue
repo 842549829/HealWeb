@@ -1,10 +1,8 @@
 <script setup lang="tsx">
-import { useForm } from '@/hooks/web/useForm'
-import { PropType, reactive, watch } from 'vue'
+import { PropType, reactive } from 'vue'
 import { useI18n } from '@/hooks/web/useI18n'
 import { ModuleListDto } from '@/api/module/type'
 import { ModuleTag } from '@/api/common/enum'
-import { cloneDeep } from 'lodash-es'
 import { Icon } from '@/components/Icon'
 import { ElTag } from 'element-plus'
 import { Descriptions, DescriptionsSchema } from '@/components/Descriptions'
@@ -17,7 +15,7 @@ const renderTag = (enable?: boolean) => {
 const { t } = useI18n()
 
 // 定义接收参数
-const props = defineProps({
+defineProps({
   currentRow: {
     type: Object as PropType<ModuleListDto>,
     default: () => null
@@ -163,23 +161,6 @@ const detailSchema = reactive<DescriptionsSchema[]>([
     }
   }
 ])
-
-const { formMethods } = useForm()
-const { setValues } = formMethods
-
-// 初始化表单数据
-watch(
-  () => props.currentRow,
-  (value) => {
-    if (!value) return
-    const currentRow = cloneDeep(value)
-    setValues(currentRow)
-  },
-  {
-    deep: true,
-    immediate: true
-  }
-)
 </script>
 
 <template>

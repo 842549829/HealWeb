@@ -97,7 +97,7 @@ const tableColumns = reactive<TableColumn[]>([
     width: 240,
     slots: {
       default: (data: any) => {
-        const row = data.row
+        const row = data.row as IdentityUserDto
         return (
           <>
             <BaseButton type="primary" onClick={() => action(row, 'edit')}>
@@ -106,9 +106,11 @@ const tableColumns = reactive<TableColumn[]>([
             <BaseButton type="success" onClick={() => action(row, 'detail')}>
               {t('exampleDemo.detail')}
             </BaseButton>
-            <BaseButton type="danger" onClick={() => delData(row)}>
-              {t('exampleDemo.del')}
-            </BaseButton>
+            {row.userName !== 'admin' && (
+              <BaseButton type="danger" onClick={() => delData(row)}>
+                {t('exampleDemo.del')}
+              </BaseButton>
+            )}
           </>
         )
       }
@@ -196,14 +198,14 @@ const save = async () => {
         }
         await userHttpRequest.createAsync(formData as UserCreateDto)
       }
+      console.log(1)
+      dialogVisible.value = false
+      getList()
     } catch (error) {
       console.log(error)
     } finally {
       saveLoading.value = false
-      dialogVisible.value = false
     }
-
-    getList()
   }
 }
 </script>
