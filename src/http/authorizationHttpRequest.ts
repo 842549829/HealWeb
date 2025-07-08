@@ -4,6 +4,7 @@ import router from '@/router'
 import { DefaultHttpRequest } from './defaultHttpRequest'
 import type { Token } from './type'
 import { HttpRequestOptions } from './httpRequestOptions'
+import { useUserStore } from '@/store/modules/user'
 
 export class AuthorizationHttpRequest extends HttpRequestBase {
   constructor() {
@@ -30,6 +31,9 @@ export class AuthorizationHttpRequest extends HttpRequestBase {
         return token
       },
       routerPush: () => {
+        // 跳转到登录页需要退出避免无法跳转到login页面
+        const userStore = useUserStore()
+        userStore.logout()
         router.push('/login')
       }
     }
