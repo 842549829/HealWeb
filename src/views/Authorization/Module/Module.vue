@@ -13,9 +13,12 @@ import { Dialog } from '@/components/Dialog'
 import Write from './components/Write.vue'
 import Detail from './components/Detail.vue'
 import { ModuleCreateDto, ModuleListDto, ModuleUpdateDto, ModuleDto } from '@/api/module/type'
+import { useRouter } from 'vue-router'
 
 // 获取当前语言
 const { t } = useI18n()
+
+const router = useRouter()
 
 // 创建 ModuleHttpRequest 实例
 const moduleHttpRequest = new ModuleHttpRequest()
@@ -85,6 +88,9 @@ const tableColumns = reactive<TableColumn[]>([
             <BaseButton type="success" onClick={() => action(row, 'detail')}>
               {t('exampleDemo.detail')}
             </BaseButton>
+            <BaseButton type="danger" onClick={() => toMenu(row)}>
+              {t('common.menu')}
+            </BaseButton>
             {/* <BaseButton type="danger" onClick={() => deleteAction(row.id)}>
               {t('exampleDemo.del')}
             </BaseButton> */}
@@ -119,6 +125,11 @@ const action = async (row: ModuleListDto, type: ActionType) => {
   actionType.value = type
   dialogVisible.value = true
   currentRow.value = await moduleHttpRequest.getAsync(row.id)
+}
+
+const toMenu = (row: ModuleListDto) => {
+  // 跳转到菜单管理
+  router.push({ path: '/authorization/menu', query: { moduleCode: row.name } })
 }
 
 // 弹窗新增

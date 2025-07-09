@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { reactive, ref, unref } from 'vue'
+import { reactive, ref, unref, onMounted } from 'vue'
 import { MenuHttpRequest } from '@/api/menu'
 import { useTable } from '@/hooks/web/useTable'
 import { useI18n } from '@/hooks/web/useI18n'
@@ -11,11 +11,14 @@ import Write from './components/Write.vue'
 import Detail from './components/Detail.vue'
 import { Dialog } from '@/components/Dialog'
 import { BaseButton } from '@/components/Button'
-import type { ActionType, FilterInput, PagedResultDto } from '@/api/common/type'
-import type { MenuCreateDto, MenuDto, MenuListDto, MenuUpdateDto } from '@/api/menu/type'
+import type { ActionType, PagedResultDto } from '@/api/common/type'
+import type { MenuCreateDto, MenuDto, MenuInput, MenuListDto, MenuUpdateDto } from '@/api/menu/type'
+import { useRoute } from 'vue-router'
 
 // i18n
 const { t } = useI18n()
+
+const route = useRoute()
 
 // menuHttpRequest
 const menuHttpRequest = new MenuHttpRequest()
@@ -28,9 +31,10 @@ const { tableRegister, tableState, tableMethods } = useTable({
   // 获取数据
   fetchDataApi: async () => {
     const skipCount = (unref(currentPage) - 1) * unref(pageSize)
-    const input: FilterInput = {
+    const input: MenuInput = {
       skipCount: skipCount,
       maxResultCount: unref(pageSize),
+      moduleCode: route.query.moduleCode as string,
       ...unref(searchParams)
     }
     const res: PagedResultDto<MenuListDto> = await menuHttpRequest.getListAsync(input)
@@ -63,22 +67,22 @@ const tableColumns = reactive<TableColumn[]>([
     type: 'index'
   },
   {
-    field: 'name',
-    label: t('menu.code'),
-    slots: {
-      default: (data: any) => {
-        const name = data.row.name
-        return <>{name}</>
-      }
-    }
-  },
-  {
     field: 'dislayName',
     label: t('menu.dislayName'),
     slots: {
       default: (data: any) => {
         const dislayName = data.row.dislayName
         return <>{dislayName}</>
+      }
+    }
+  },
+  {
+    field: 'name',
+    label: t('menu.code'),
+    slots: {
+      default: (data: any) => {
+        const name = data.row.name
+        return <>{name}</>
       }
     }
   },
@@ -164,6 +168,7 @@ const save = async () => {
   const formData = await write?.submit()
   if (formData) {
     saveLoading.value = true
+    formData.groupName = route.query.moduleCode as string
     try {
       if (actionType.value === 'edit') {
         await menuHttpRequest.updateAsync(currentRow.value!.id, formData as MenuUpdateDto)
@@ -180,6 +185,10 @@ const save = async () => {
     getList()
   }
 }
+
+onMounted(() => {
+  getList()
+})
 </script>
 
 <template>
@@ -188,12 +197,14 @@ const save = async () => {
     <div class="mb-10px">
       <BaseButton type="primary" @click="addAction">{{ t('exampleDemo.add') }}</BaseButton>
     </div>
+    <!-- 表格 tree-props 配置表格加载子的节点属性-->
     <Table
       v-model:pageSize="pageSize"
       v-model:currentPage="currentPage"
       :columns="tableColumns"
       :data="dataList"
       :loading="loading"
+      :tree-props="{ children: 'children' }"
       :pagination="{
         total: total,
         pageSizes: [10, 20, 30, 40, 50],

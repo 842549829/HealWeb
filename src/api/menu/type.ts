@@ -1,4 +1,4 @@
-import { EntityDto } from '../common/type'
+import { EntityDto, FilterInput } from '../common/type'
 import { MultiTenancySides, PermissionType } from '../common/enum'
 
 /**
@@ -227,4 +227,20 @@ export interface MenuDto extends IMenuCreateOrUpdateDto, EntityDto<string> {
    * 权限类型（可为空）
    */
   type?: PermissionType
+
+  /**
+   * 子菜单
+   */
+  children: MenuDto[]
+}
+
+/**
+ * 菜单输入接口定义
+ */
+
+export interface MenuInput extends FilterInput {
+  /**
+   * 模块编码
+   */
+  moduleCode: string
 }

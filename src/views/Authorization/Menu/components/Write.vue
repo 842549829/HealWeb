@@ -4,7 +4,6 @@ import { useForm } from '@/hooks/web/useForm'
 import { PropType, reactive, watch } from 'vue'
 import { useValidator } from '@/hooks/web/useValidator'
 import { useI18n } from '@/hooks/web/useI18n'
-import { cloneDeep } from 'lodash-es'
 import { MenuDto } from '@/api/menu/type'
 import { MultiTenancySides, PermissionType } from '@/api/common/enum'
 import { generateEnumOptionsLocales } from '@/utils/enumUtils'
@@ -27,7 +26,6 @@ const multiTenancySideOptions = generateEnumOptionsLocales(
   'menu.multiTenancySides'
 )
 
-// 权限类型
 const typeOptions = generateEnumOptionsLocales(PermissionType, t, 'menu.types')
 
 const formSchema = reactive<FormSchema[]>([
@@ -36,11 +34,11 @@ const formSchema = reactive<FormSchema[]>([
     label: t('menu.code'),
     component: 'Input'
   },
-  {
-    field: 'groupName',
-    label: t('menu.groupName'),
-    component: 'Input'
-  },
+  // {
+  //   field: 'groupName',
+  //   label: t('menu.groupName'),
+  //   component: 'Input'
+  // },
   {
     field: 'displayName',
     label: t('menu.menuName'),
@@ -184,7 +182,7 @@ const formSchema = reactive<FormSchema[]>([
 
 const rules = reactive({
   permissionName: [required()],
-  groupName: [required()],
+  //groupName: [required()],
   displayName: [required()],
   tag: [required(), number()],
   name: [required()],
@@ -219,25 +217,29 @@ watch(
         path: 'remove',
         value: true
       },
+      // {
+      //   field: 'groupName',
+      //   path: 'remove',
+      //   value: true
+      // },
       {
-        field: 'groupName',
+        field: 'parentName',
         path: 'remove',
         value: true
       },
       {
-        field: 'parentName',
+        field: 'type',
         path: 'remove',
         value: true
       },
       {
-        field: 'parentName',
-        path: 'type',
+        field: 'multiTenancySide',
+        path: 'remove',
         value: true
       }
     ])
 
-    const currentRow = cloneDeep(value)
-    setValues(currentRow)
+    setValues(value)
   },
   {
     deep: true,
