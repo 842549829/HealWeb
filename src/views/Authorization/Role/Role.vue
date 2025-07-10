@@ -138,9 +138,11 @@ const tableColumns = reactive<TableColumn[]>([
             <BaseButton type="success" onClick={() => action(row, 'detail')}>
               {t('exampleDemo.detail')}
             </BaseButton>
-            <BaseButton type="danger" onClick={() => delData(row)}>
-              {t('exampleDemo.del')}
-            </BaseButton>
+            {row.name !== 'admin' && (
+              <BaseButton type="danger" onClick={() => delData(row)}>
+                {t('exampleDemo.del')}
+              </BaseButton>
+            )}
           </>
         )
       }
