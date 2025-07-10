@@ -30,7 +30,7 @@ const typeOptions = generateEnumOptionsLocales(PermissionType, t, 'menu.types')
 
 const formSchema = reactive<FormSchema[]>([
   {
-    field: 'permissionName',
+    field: 'name',
     label: t('menu.code'),
     component: 'Input'
   },

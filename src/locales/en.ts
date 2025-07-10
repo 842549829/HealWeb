@@ -640,7 +640,22 @@ export default {
     email: 'Email',
     address: 'Address',
     description: 'Description',
-    code: 'Code'
+    code: 'Code',
+    parentId: 'Parent Organization',
+    establishmentDate: 'Establishment Date',
+    websiteUrl: 'Website Url',
+    postalCode: 'Postal Code',
+    serviceHotline: 'Service Hotline',
+    introduction: 'Introduction',
+    trafficGuide: 'Traffic Guide',
+    parkingInformation: 'Parking Information',
+    facilities: 'Facilities',
+    coverImage: 'Cover Image',
+    longitude: 'Longitude',
+    latitude: 'Latitude',
+    describe: 'Describe',
+    isEmergencyServices: 'Is Emergency Services',
+    isInsuranceAccepted: 'Is Insurance Accepted'
   },
   inputPasswordDemo: {
     title: 'InputPassword',

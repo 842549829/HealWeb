@@ -630,7 +630,22 @@ export default {
     email: '邮箱',
     address: '地址',
     description: '描述',
-    code: '编码'
+    code: '编码',
+    parentId: '上级组织',
+    establishmentDate: '成立时间',
+    websiteUrl: '网站地址',
+    postalCode: '邮政编码',
+    serviceHotline: '服务热线',
+    introduction: '医院简介',
+    trafficGuide: '交通指南',
+    parkingInformation: '停车信息',
+    facilities: '医院设施',
+    coverImage: '封面图片',
+    longitude: '经度',
+    latitude: '纬度',
+    describe: '备注描述',
+    isEmergencyServices: '是否急救服务',
+    isInsuranceAccepted: '是否接受医保'
   },
   inputPasswordDemo: {
     title: '密码输入框',
