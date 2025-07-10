@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ElCard, ElRow, ElCol, ElInput, ElSkeleton } from 'element-plus'
 import { Icon } from '@/components/Icon'
-import { computed, ref, onMounted, watch } from 'vue'
+import { computed, ref, onMounted, watch, unref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -13,9 +13,15 @@ import { usePermissionStore } from '@/store/modules/permission'
 import type { ModuleHomeListDto } from '@/api/home/type'
 import { HomeHttpRequest } from '@/api/home/index'
 import { useUserStore } from '@/store/modules/user'
+import { useTagsViewStore } from '@/store/modules/tagsView'
+import { useTagsView } from '@/hooks/web/useTagsView'
 
 // 创建 HomeHttpRequest 实例
 const homeHttpRequest = new HomeHttpRequest()
+
+const tagsViewStore = useTagsViewStore()
+const setSelectTag = tagsViewStore.setSelectedTag
+const { closeAll } = useTagsView()
 
 const { currentRoute, addRoute, push, removeRoute } = useRouter()
 
@@ -116,7 +122,45 @@ const handleCardClick = async (module: ModuleHomeListDto) => {
     window.open(module.path, '_blank')
   } else {
     await getMenu(module.moduleName)
+
+    // 切换的时候关闭其他标签
+    closeAllTags()
   }
+}
+
+// 去最后一个
+const toLastView = () => {
+  const visitedViews = tagsViewStore.getVisitedViews
+  const latestView = visitedViews.slice(-1)[0]
+  if (latestView) {
+    push(latestView)
+  } else {
+    if (
+      unref(currentRoute).path === permissionStore.getAddRouters[0].path ||
+      unref(currentRoute).path === permissionStore.getAddRouters[0].redirect
+    ) {
+      addTags()
+      return
+    }
+    // You can set another route
+    push(permissionStore.getAddRouters[0].path)
+  }
+}
+
+// 新增tag
+const addTags = () => {
+  const { name } = unref(currentRoute)
+  if (name) {
+    setSelectTag(unref(currentRoute))
+    tagsViewStore.addView(unref(currentRoute))
+  }
+}
+
+// 关闭全部
+const closeAllTags = () => {
+  closeAll(() => {
+    toLastView()
+  })
 }
 </script>
 

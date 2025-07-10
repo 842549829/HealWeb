@@ -7,9 +7,17 @@ import { useTable } from '@/hooks/web/useTable'
 import { ref, unref, reactive } from 'vue'
 import { FormSchema } from '@/components/Form'
 import { ActionType, PagedResultDto } from '@/api/common/type'
-import { GetOrganizationsInput, OrganizationDto } from '@/api/organizations/organization/type'
+import {
+  GetOrganizationsInput,
+  OrganizationCreateDto,
+  OrganizationDto,
+  OrganizationUpdateDto
+} from '@/api/organizations/organization/type'
 import { OrganizationsHttpRequest } from '@/api/organizations/organization/index'
 import { BaseButton } from '@/components/Button'
+import { Dialog } from '@/components/Dialog'
+import Write from './components/Write.vue'
+import Detail from './components/Detail.vue'
 
 // 多语言配置
 const { t } = useI18n()
@@ -19,6 +27,78 @@ const organizationsHttpRequest = new OrganizationsHttpRequest()
 
 // 删除的ids
 const ids = ref<string[]>([])
+
+// 弹窗属性
+const dialogVisible = ref(false)
+const dialogTitle = ref('')
+
+// 当前选中的行
+const currentRow = ref<OrganizationDto>()
+
+// 当前操作的类型
+const actionType = ref<ActionType>('')
+
+// 搜索表单数据
+const searchParams = ref()
+
+// 写入组件引用
+const writeRef = ref<ComponentRef<typeof Write>>()
+
+// 保存按钮加载状态
+const saveLoading = ref(false)
+
+// 搜索表单定义
+const searchSchema = reactive<FormSchema[]>([
+  {
+    field: 'filter',
+    label: t('userDemo.filter'),
+    component: 'Input'
+  }
+])
+
+// 表格列定义
+const tableColumns = reactive<TableColumn[]>([
+  {
+    field: 'index',
+    label: t('userDemo.index'),
+    type: 'index'
+  },
+  {
+    field: 'displayName',
+    label: t('organization.displayName')
+  },
+  {
+    field: 'code',
+    label: t('organization.code')
+  },
+  {
+    field: 'extraProperties.Phone',
+    label: t('organization.phone')
+  },
+  {
+    field: 'action',
+    label: t('userDemo.action'),
+    width: 240,
+    slots: {
+      default: (data: any) => {
+        const row = data.row
+        return (
+          <>
+            <BaseButton type="primary" onClick={() => action(row, 'edit')}>
+              {t('exampleDemo.edit')}
+            </BaseButton>
+            <BaseButton type="success" onClick={() => action(row, 'detail')}>
+              {t('exampleDemo.detail')}
+            </BaseButton>
+            <BaseButton type="danger" onClick={() => delData(row)}>
+              {t('exampleDemo.del')}
+            </BaseButton>
+          </>
+        )
+      }
+    }
+  }
+])
 
 // useTable
 const { tableRegister, tableState, tableMethods } = useTable({
@@ -50,14 +130,6 @@ const { tableRegister, tableState, tableMethods } = useTable({
 const { dataList, loading, total, currentPage, pageSize } = tableState
 const { getList, getElTableExpose, delList } = tableMethods
 
-// 弹窗属性
-const dialogVisible = ref(false)
-const dialogTitle = ref('')
-// 当前选中的行
-const currentRow = ref<OrganizationDto>()
-// 当前操作的类型
-const actionType = ref<ActionType>('')
-
 // 操作(编辑/详情)
 const action = (row: OrganizationDto, type: ActionType) => {
   dialogTitle.value = t(type === 'edit' ? 'exampleDemo.edit' : 'exampleDemo.detail')
@@ -78,71 +150,52 @@ const delData = async (row: OrganizationDto | null) => {
   })
 }
 
-// 搜索表单数据
-const searchParams = ref()
-
 // 设置搜索表单数据
 const setSearchParams = (data: any) => {
   searchParams.value = data
   getList()
 }
 
-// 搜索表单定义
-const searchSchema = reactive<FormSchema[]>([
-  {
-    field: 'filter',
-    label: t('userDemo.filter'),
-    component: 'Input'
-  }
-])
+// 添加操作
+const addAction = () => {
+  dialogTitle.value = t('exampleDemo.add')
+  currentRow.value = undefined
+  dialogVisible.value = true
+  actionType.value = ''
+}
 
-// 表格列定义
-const tableColumns = reactive<TableColumn[]>([
-  {
-    field: 'index',
-    label: t('userDemo.index'),
-    type: 'index'
-  },
-  {
-    field: 'code',
-    label: t('organization.code')
-  },
-  {
-    field: 'displayName',
-    label: t('organization.displayName')
-  },
-  {
-    field: 'extraProperties.Phone',
-    label: t('organization.phone')
-  },
-  {
-    field: 'action',
-    label: t('userDemo.action'),
-    width: 240,
-    slots: {
-      default: (data: any) => {
-        const row = data.row
-        return (
-          <>
-            <BaseButton type="primary" onClick={() => action(row, 'edit')}>
-              {t('exampleDemo.edit')}
-            </BaseButton>
-            <BaseButton type="success" onClick={() => action(row, 'detail')}>
-              {t('exampleDemo.detail')}
-            </BaseButton>
-            <BaseButton type="danger" onClick={() => delData(row)}>
-              {t('exampleDemo.del')}
-            </BaseButton>
-          </>
+// 保存
+const save = async () => {
+  const write = unref(writeRef)
+  const formData = await write?.submit()
+  if (formData) {
+    saveLoading.value = true
+    try {
+      if (actionType.value === 'edit') {
+        await organizationsHttpRequest.updateAsync(
+          currentRow.value!.id,
+          formData as OrganizationUpdateDto
         )
+      } else if (actionType.value === '') {
+        await organizationsHttpRequest.createAsync(formData as OrganizationCreateDto)
       }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      saveLoading.value = false
+      dialogVisible.value = false
     }
+
+    getList()
   }
-])
+}
 </script>
 <template>
   <ContentWrap>
     <Search :schema="searchSchema" @search="setSearchParams" @reset="setSearchParams" />
+    <div class="mb-10px">
+      <BaseButton type="primary" @click="addAction">{{ t('exampleDemo.add') }}</BaseButton>
+    </div>
     <Table
       :columns="tableColumns"
       default-expand-all
@@ -155,4 +208,19 @@ const tableColumns = reactive<TableColumn[]>([
       @register="tableRegister"
     />
   </ContentWrap>
+  <Dialog v-model="dialogVisible" :title="dialogTitle">
+    <Write v-if="actionType !== 'detail'" ref="writeRef" :current-row="currentRow" />
+    <Detail v-if="actionType === 'detail'" :current-row="currentRow" />
+    <template #footer>
+      <BaseButton
+        v-if="actionType !== 'detail'"
+        type="primary"
+        :loading="saveLoading"
+        @click="save"
+      >
+        {{ t('exampleDemo.save') }}
+      </BaseButton>
+      <BaseButton @click="dialogVisible = false">{{ t('dialogDemo.close') }}</BaseButton>
+    </template>
+  </Dialog>
 </template>
