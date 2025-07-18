@@ -1,11 +1,10 @@
 <script setup lang="tsx">
 import { Form, FormSchema } from '@/components/Form'
+import { DropdownTable } from '@/components/DropdownTable'
 import { useForm } from '@/hooks/web/useForm'
 import { PropType, reactive, watch } from 'vue'
 import { useValidator } from '@/hooks/web/useValidator'
 import { useI18n } from '@/hooks/web/useI18n'
-import { MultiTenancySides, PermissionType } from '@/api/common/enum'
-import { generateEnumOptionsLocales } from '@/utils/enumUtils'
 import { OrganizationDto } from '@/api/organizations/organization/type'
 
 const { t } = useI18n()
@@ -19,159 +18,106 @@ const props = defineProps({
   }
 })
 
-// 多租户
-const multiTenancySideOptions = generateEnumOptionsLocales(
-  MultiTenancySides,
-  t,
-  'menu.multiTenancySides'
-)
-
-const typeOptions = generateEnumOptionsLocales(PermissionType, t, 'menu.types')
+const parentId = ''
 
 const formSchema = reactive<FormSchema[]>([
   {
-    field: 'name',
-    label: t('menu.code'),
+    field: 'displayName',
+    label: t('organization.displayName'),
     component: 'Input'
   },
   {
-    field: 'displayName',
-    label: t('menu.menuName'),
-    component: 'Input'
+    field: 'parentId',
+    label: t('organization.parentId'),
+    formItemProps: {
+      slots: {
+        default: () => {
+          return <DropdownTable modelValue={parentId} />
+        }
+      }
+    }
   },
   {
     field: 'extraProperties.Phone',
-    label: t('menu.parentName'),
+    label: t('organization.phone'),
     component: 'Input'
   },
   {
-    field: 'tag',
-    label: t('menu.tag'),
+    field: 'extraProperties.Email',
+    label: t('organization.email'),
     component: 'Input'
   },
   {
-    field: 'path',
-    label: t('menu.path'),
+    field: 'extraProperties.EstablishmentDate',
+    label: t('organization.establishmentDate'),
+    component: 'DatePicker'
+  },
+  {
+    field: 'extraProperties.WebsiteUrl',
+    label: t('organization.websiteUrl'),
     component: 'Input'
   },
   {
-    field: 'name',
-    label: t('menu.name'),
+    field: 'extraProperties.Address',
+    label: t('organization.address'),
     component: 'Input'
   },
   {
-    field: 'component',
-    label: t('menu.component'),
+    field: 'extraProperties.PostalCode',
+    label: t('organization.postalCode'),
     component: 'Input'
   },
   {
-    field: 'redirect',
-    label: t('menu.redirect'),
+    field: 'extraProperties.ServiceHotline',
+    label: t('organization.serviceHotline'),
     component: 'Input'
   },
   {
-    field: 'alias',
-    label: t('menu.alias'),
+    field: 'extraProperties.Introduction',
+    label: t('organization.introduction'),
     component: 'Input'
   },
   {
-    field: 'title',
-    label: t('menu.title'),
+    field: 'extraProperties.TrafficGuide',
+    label: t('organization.trafficGuide'),
     component: 'Input'
   },
   {
-    field: 'icon',
-    label: t('menu.icon'),
+    field: 'extraProperties.ParkingInformation',
+    label: t('organization.parkingInformation'),
     component: 'Input'
   },
   {
-    field: 'activeMenu',
-    label: t('menu.activeMenu'),
+    field: 'extraProperties.Longitude',
+    label: t('organization.longitude'),
     component: 'Input'
   },
   {
-    field: 'multiTenancySide',
-    label: t('menu.multiTenancySide'),
-    component: 'Select',
-    componentProps: {
-      options: multiTenancySideOptions
-    }
-  },
-  {
-    field: 'providers',
-    label: t('menu.providers'),
+    field: 'extraProperties.Latitude',
+    label: t('organization.latitude'),
     component: 'Input'
   },
   {
-    field: 'stateCheckers',
-    label: t('menu.stateCheckers'),
+    field: 'extraProperties.Facilities',
+    label: t('organization.facilities'),
     component: 'Input'
   },
   {
-    field: 'type',
-    label: t('menu.type'),
-    component: 'Select',
-    componentProps: {
-      options: typeOptions
-    }
+    field: 'extraProperties.Describe',
+    label: t('organization.describe'),
+    component: 'Input'
   },
   {
-    field: 'isEnabled',
-    label: t('menu.isEnabled'),
+    field: 'extraProperties.IsEmergencyServices',
+    label: t('organization.isEmergencyServices'),
     component: 'Switch',
-    componentProps: {
-      default: true
-    }
+    value: true
   },
   {
-    field: 'hidden',
-    label: t('menu.hidden'),
+    field: 'extraProperties.IsInsuranceAccepted',
+    label: t('organization.isEmergencyServices'),
     component: 'Switch',
-    componentProps: {
-      default: true
-    }
-  },
-  {
-    field: 'alwaysShow',
-    label: t('menu.alwaysShow'),
-    component: 'Switch',
-    componentProps: {
-      default: true
-    }
-  },
-  {
-    field: 'noCache',
-    label: t('menu.noCache'),
-    component: 'Switch',
-    componentProps: {
-      default: true
-    }
-  },
-  {
-    field: 'breadcrumb',
-    label: t('menu.breadcrumb'),
-    component: 'Switch'
-  },
-  {
-    field: 'affix',
-    label: t('menu.affix'),
-    component: 'Switch',
-    componentProps: {
-      default: true
-    }
-  },
-  {
-    field: 'noTagsView',
-    label: t('menu.noTagsView'),
-    component: 'Switch',
-    componentProps: {
-      default: true
-    }
-  },
-  {
-    field: 'canTo',
-    label: t('menu.canTo'),
-    component: 'Switch'
+    value: true
   }
 ])
 
