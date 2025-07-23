@@ -2,14 +2,14 @@
 import { Form, FormSchema } from '@/components/Form'
 import { DropdownTable } from '@/components/DropdownTable'
 import { useForm } from '@/hooks/web/useForm'
-import { PropType, reactive, watch } from 'vue'
+import { PropType, reactive, ref, watch } from 'vue'
 import { useValidator } from '@/hooks/web/useValidator'
 import { useI18n } from '@/hooks/web/useI18n'
 import { OrganizationDto } from '@/api/organizations/organization/type'
 
 const { t } = useI18n()
 
-const { required, number } = useValidator()
+const { required } = useValidator()
 
 const props = defineProps({
   currentRow: {
@@ -18,7 +18,11 @@ const props = defineProps({
   }
 })
 
-const parentId = ''
+const parentId = ref<string | null>(null)
+
+const handleUpdate = (value: string | null) => {
+  parentId.value = value
+}
 
 const formSchema = reactive<FormSchema[]>([
   {
@@ -32,7 +36,7 @@ const formSchema = reactive<FormSchema[]>([
     formItemProps: {
       slots: {
         default: () => {
-          return <DropdownTable modelValue={parentId} />
+          return <DropdownTable modelValue={parentId.value} onUpdate:modelValue={handleUpdate} />
         }
       }
     }
@@ -122,14 +126,8 @@ const formSchema = reactive<FormSchema[]>([
 ])
 
 const rules = reactive({
-  permissionName: [required()],
   displayName: [required()],
-  tag: [required(), number()],
-  name: [required()],
-  component: [required()],
-  path: [required()],
-  title: [required()],
-  type: [required()]
+  'extraProperties.Phone': [required()]
 })
 
 const { formRegister, formMethods } = useForm()
@@ -142,6 +140,7 @@ const submit = async () => {
   })
   if (valid) {
     const formData = await getFormData()
+    formData.parentId = parentId.value
     return formData
   }
 }
