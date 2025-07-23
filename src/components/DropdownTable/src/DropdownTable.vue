@@ -73,6 +73,18 @@ const clear = () => {
   emits('update:modelValue', null)
   selectedLabel.value = ''
 }
+
+const load = async (
+  row: OrganizationTreeDto,
+  treeNode: unknown,
+  resolve: (date: OrganizationTreeDto[]) => void
+): Promise<void> => {
+  if (!treeNode) return
+  const childOrganizationDto: OrganizationTreeDto[] = await organizationsHttpRequest.getTreeAsync(
+    row.id
+  )
+  resolve(childOrganizationDto)
+}
 </script>
 
 <template>
@@ -85,7 +97,9 @@ const clear = () => {
       highlight-current-row
       @row-click="handleRowClick"
       row-key="id"
-      :tree-props="{ children: 'children' }"
+      :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+      :lazy="true"
+      :load="load"
       style="width: 100%; cursor: pointer"
     >
       <ElTableColumn prop="code" label="code" />
