@@ -11,6 +11,7 @@ import {
   GetOrganizationsInput,
   OrganizationCreateDto,
   OrganizationDto,
+  OrganizationTreeDto,
   OrganizationUpdateDto
 } from '@/api/organizations/organization/type'
 import { OrganizationsHttpRequest } from '@/api/organizations/organization/index'
@@ -189,6 +190,18 @@ const save = async () => {
     getList()
   }
 }
+
+const load = async (
+  row: OrganizationTreeDto,
+  treeNode: unknown,
+  resolve: (date: OrganizationTreeDto[]) => void
+): Promise<void> => {
+  if (!treeNode) return
+  const childOrganizationDto: OrganizationTreeDto[] = await organizationsHttpRequest.getTreeAsync(
+    row.id
+  )
+  resolve(childOrganizationDto)
+}
 </script>
 <template>
   <ContentWrap>
@@ -206,6 +219,9 @@ const save = async () => {
         total
       }"
       @register="tableRegister"
+      :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+      :lazy="true"
+      :load="load"
     />
   </ContentWrap>
   <Dialog v-model="dialogVisible" :title="dialogTitle">
