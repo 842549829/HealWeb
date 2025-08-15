@@ -149,6 +149,7 @@ const delData = async (row: OrganizationDto | null) => {
   loading.value = true
   await delList(unref(ids).length).finally(() => {
     loading.value = false
+    hasChange.value = true
   })
 }
 
