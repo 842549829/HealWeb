@@ -19,6 +19,7 @@ import { BaseButton } from '@/components/Button'
 import { Dialog } from '@/components/Dialog'
 import Write from './components/Write.vue'
 import Detail from './components/Detail.vue'
+import { TreeNode } from 'element-plus'
 
 // 多语言配置
 const { t } = useI18n()
@@ -190,17 +191,39 @@ const save = async () => {
     getList()
   }
 }
-
+// 标记当前已执行load
+const hasLoad = ref(false)
+const currentLoadTreeData = ref<OrganizationTreeDto>()
+const resolveObj = ref<(date: OrganizationTreeDto[]) => void>()
 const load = async (
   row: OrganizationTreeDto,
-  treeNode: unknown,
+  treeNode: TreeNode,
   resolve: (date: OrganizationTreeDto[]) => void
 ): Promise<void> => {
   if (!treeNode) return
+
+  hasLoad.value = true
+  currentLoadTreeData.value = row
+  resolveObj.value = resolve
+
   const childOrganizationDto: OrganizationTreeDto[] = await organizationsHttpRequest.getTreeAsync(
     row.id
   )
   resolve(childOrganizationDto)
+}
+
+// 展开/收起时触发
+const handleExpandChange = (_row: OrganizationTreeDto, expanded: boolean) => {
+  if (expanded) {
+    // 当前是展开状态
+    if (hasLoad.value) {
+      // 已执行过load，则去掉执行过的标记
+      hasLoad.value = false
+    } else {
+      // 不然，则执行load。因为load只会执行一次，所以需要在expand事件触发再次执行
+      load(currentLoadTreeData.value!, {}, resolveObj.value!)
+    }
+  }
 }
 </script>
 <template>
@@ -222,6 +245,7 @@ const load = async (
       :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
       :lazy="true"
       :load="load"
+      @expand-change="handleExpandChange"
     />
   </ContentWrap>
   <Dialog v-model="dialogVisible" :title="dialogTitle">

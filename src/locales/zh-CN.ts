@@ -647,6 +647,11 @@ export default {
     isEmergencyServices: '是否急救服务',
     isInsuranceAccepted: '是否接受医保'
   },
+  campus: {
+    name: '院区名称',
+    code: '院区编码',
+    description: '院区描述'
+  },
   inputPasswordDemo: {
     title: '密码输入框',
     inputPasswordDes: '基于 ElementPlus 的 Input 组件二次封装'

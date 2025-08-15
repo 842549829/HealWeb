@@ -657,6 +657,11 @@ export default {
     isEmergencyServices: 'Is Emergency Services',
     isInsuranceAccepted: 'Is Insurance Accepted'
   },
+  campus: {
+    name: 'Name',
+    code: 'Code',
+    description: 'Description'
+  },
   inputPasswordDemo: {
     title: 'InputPassword',
     inputPasswordDes: 'Secondary packaging of Input components based on ElementPlus'
