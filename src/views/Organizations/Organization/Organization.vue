@@ -186,6 +186,7 @@ const save = async () => {
     } finally {
       saveLoading.value = false
       dialogVisible.value = false
+      hasChange.value = true
     }
 
     getList()
@@ -195,6 +196,9 @@ const save = async () => {
 const hasLoad = ref(false)
 const currentLoadTreeData = ref<OrganizationTreeDto>()
 const resolveObj = ref<(date: OrganizationTreeDto[]) => void>()
+// 数据是否有变化
+const hasChange = ref(false)
+
 const load = async (
   row: OrganizationTreeDto,
   treeNode: TreeNode,
@@ -220,6 +224,9 @@ const handleExpandChange = (_row: OrganizationTreeDto, expanded: boolean) => {
       // 已执行过load，则去掉执行过的标记
       hasLoad.value = false
     } else {
+      // 有数据有变化，则执行load
+      if (!hasChange.value) return
+      hasChange.value = false
       // 不然，则执行load。因为load只会执行一次，所以需要在expand事件触发再次执行
       load(currentLoadTreeData.value!, {}, resolveObj.value!)
     }
