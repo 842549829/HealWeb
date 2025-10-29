@@ -1,3 +1,5 @@
+import { OrdinaryDict, BaseDict, EnumDict } from '@/api/common/const'
+
 /**
  * 过滤条件通用类型
  */
@@ -337,3 +339,39 @@ export interface SelectDto {
    */
   label: string
 }
+
+/**
+ * 字典注册表
+ */
+export const Dict = {
+  ...OrdinaryDict,
+  ...BaseDict,
+  ...EnumDict
+} as const
+
+// 定义字典下拉选项，每个字典项包含三个属性
+export interface DictStateList {
+  value: string | number // 字典项的唯一标识，使用字符串类型
+  label: string // 字典项对应的值，使用字符串类型
+  disabled: boolean // 是否可用
+}
+
+/**
+ * 字典类型
+ */
+export type DictType = (typeof Dict)[keyof typeof Dict]
+
+/**
+ * 字典数据源
+ */
+export type DictDataSource = (type: DictType) => Promise<DictStateList[]>
+
+/**
+ * 默认值类型
+ */
+export type DefaultValueType = string | number | null
+
+/**
+ * 默认值源
+ */
+export type DefaultValueSource = (type: DictType) => Promise<DefaultValueType>
