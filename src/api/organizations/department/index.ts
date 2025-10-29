@@ -1,5 +1,5 @@
 import { AuthorizationHttpRequest } from '@/http/index'
-import { ApiUrls } from '../../urls/index'
+import ApiConfig from '../../urls/index'
 import type {
   DepartmentCreateDto,
   DepartmentDto,
@@ -29,7 +29,10 @@ export class DepartmentHttpRequest {
    */
   public async createAsync(input: DepartmentCreateDto): Promise<DepartmentDto> {
     const client = this.getClinet()
-    return await client.post<DepartmentDto>(ApiUrls.Organizations.Department.Default, input)
+    return await client.post<DepartmentDto>(
+      ApiConfig.api.net.basics.organizations.department.default,
+      input
+    )
   }
 
   /**
@@ -41,7 +44,7 @@ export class DepartmentHttpRequest {
   public async updateAsync(id: string, input: DepartmentUpdateDto): Promise<DepartmentDto> {
     const client = this.getClinet()
     return await client.put<DepartmentDto>(
-      `${ApiUrls.Organizations.Department.Default}/${id}`,
+      `${ApiConfig.api.net.basics.organizations.department.default}/${id}`,
       input
     )
   }
@@ -53,7 +56,7 @@ export class DepartmentHttpRequest {
    */
   public async getListAsync(input: DepartmentInput): Promise<PagedResultDto<DepartmentListDto>> {
     const client = this.getClinet()
-    const url = getUrlParameters(ApiUrls.Organizations.Department.Default, input)
+    const url = getUrlParameters(ApiConfig.api.net.basics.organizations.department.default, input)
     return await client.get<PagedResultDto<DepartmentListDto>>(url)
   }
 }

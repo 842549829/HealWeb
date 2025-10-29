@@ -1,5 +1,5 @@
 import { AuthorizationHttpRequest } from '@/http/index'
-import { ApiUrls } from '../urls/index'
+import ApiConfig from '../urls/index'
 import type { MenuCreateDto, MenuDto, MenuListDto, MenuUpdateDto } from './type'
 import type { FilterInput, PagedResultDto } from '../common/type'
 import { getUrlParameters } from '@/utils/urlSearchParams'
@@ -18,12 +18,12 @@ export class MenuHttpRequest {
 
   /**
    * 创建菜单
-   * @param input
+   * @param input 创建菜单
    * @returns
    */
   public async createAsync(input: MenuCreateDto): Promise<void> {
     const client = this.getClinet()
-    return await client.post(ApiUrls.Menu.Default, input)
+    return await client.post(ApiConfig.api.net.basics.menus.default, input)
   }
 
   /**
@@ -33,7 +33,7 @@ export class MenuHttpRequest {
    */
   public async getAsync(id: string): Promise<MenuDto> {
     const client = this.getClinet()
-    return await client.get<MenuDto>(`${ApiUrls.Menu.Default}/${id}`)
+    return await client.get<MenuDto>(`${ApiConfig.api.net.basics.menus.default}/${id}`)
   }
 
   /**
@@ -44,7 +44,7 @@ export class MenuHttpRequest {
    */
   public async updateAsync(id: string, input: MenuUpdateDto): Promise<void> {
     const client = this.getClinet()
-    return await client.put(`${ApiUrls.Menu.Default}/${id}`, input)
+    return await client.put(`${ApiConfig.api.net.basics.menus.default}/${id}`, input)
   }
 
   /**
@@ -54,7 +54,7 @@ export class MenuHttpRequest {
    */
   public async getListAsync(input: FilterInput): Promise<PagedResultDto<MenuListDto>> {
     const client = this.getClinet()
-    const url = getUrlParameters(ApiUrls.Menu.Default, input)
+    const url = getUrlParameters(ApiConfig.api.net.basics.menus.default, input)
     return await client.get<PagedResultDto<MenuListDto>>(url)
   }
 
@@ -65,7 +65,7 @@ export class MenuHttpRequest {
    */
   public async deleteAsync(id: string): Promise<void> {
     const client = this.getClinet()
-    return await client.delete(`${ApiUrls.Menu.Default}/${id}`)
+    return await client.delete(`${ApiConfig.api.net.basics.menus.default}/${id}`)
   }
 
   /**
@@ -75,7 +75,7 @@ export class MenuHttpRequest {
    */
   public async deleteBatchAsync(ids: string[]): Promise<void> {
     const client = this.getClinet()
-    return await client.delete(`${ApiUrls.Menu.DeleteBatch}`, {
+    return await client.delete(`${ApiConfig.api.net.basics.menus.deleteBatch}`, {
       data: {
         ids
       }

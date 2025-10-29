@@ -1,5 +1,5 @@
 import { AuthorizationHttpRequest } from '@/http/index'
-import { ApiUrls } from '../urls/index'
+import ApiConfig from '../urls/index'
 import type { ModuleCreateDto, ModuleDto, ModuleListDto, ModuleUpdateDto } from './type'
 import type { FilterInput, PagedResultDto } from '../common/type'
 import { getUrlParameters } from '@/utils/urlSearchParams'
@@ -23,7 +23,7 @@ export class ModuleHttpRequest {
    */
   public async createAsync(input: ModuleCreateDto): Promise<void> {
     const client = this.getClinet()
-    return await client.post(ApiUrls.Module.Default, input)
+    return await client.post(ApiConfig.api.net.basics.modules.default, input)
   }
 
   /**
@@ -33,7 +33,7 @@ export class ModuleHttpRequest {
    */
   public async getAsync(id: string): Promise<ModuleDto> {
     const client = this.getClinet()
-    return await client.get<ModuleDto>(`${ApiUrls.Module.Default}/${id}`)
+    return await client.get<ModuleDto>(`${ApiConfig.api.net.basics.modules.default}/${id}`)
   }
 
   /**
@@ -44,7 +44,7 @@ export class ModuleHttpRequest {
    */
   public async updateAsync(id: string, input: ModuleUpdateDto): Promise<void> {
     const client = this.getClinet()
-    return await client.put(`${ApiUrls.Module.Default}/${id}`, input)
+    return await client.put(`${ApiConfig.api.net.basics.modules.default}/${id}`, input)
   }
 
   /**
@@ -54,7 +54,7 @@ export class ModuleHttpRequest {
    */
   public async getListAsync(input: FilterInput): Promise<PagedResultDto<ModuleListDto>> {
     const client = this.getClinet()
-    const url = getUrlParameters(ApiUrls.Module.Default, input)
+    const url = getUrlParameters(ApiConfig.api.net.basics.modules.default, input)
     return await client.get<PagedResultDto<ModuleListDto>>(url)
   }
 }

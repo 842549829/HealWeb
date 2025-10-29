@@ -1,7 +1,7 @@
 import request from '@/axios'
 import type { UserLoginType, UserType } from './types'
 import { UnAuthorizationHttpRequest } from '@/http/index'
-import { ApiUrls } from '../urls/index'
+import ApiConfig from '../urls/index'
 
 interface RoleParams {
   roleName: string
@@ -12,7 +12,7 @@ export class LoginHttpRequest {
   // 登录
   public loginAsync(input: UserLoginType) {
     const client = this.getRequest()
-    return client.post<UserType>(ApiUrls.Accounts.Login, input)
+    return client.post<UserType>(ApiConfig.api.net.basics.accounts.login, input)
   }
   private getRequest() {
     return new UnAuthorizationHttpRequest()

@@ -1,6 +1,6 @@
 // 导入授权请求的Http请求模块类
 import { AuthorizationHttpRequest } from '@/http/index'
-import { ApiUrls } from '../urls/index'
+import ApiConfig from '../urls/index'
 import {
   IdentityUserDetailDto,
   IdentityUserDto,
@@ -34,7 +34,7 @@ export class UserHttpRequest extends AuthorizationHttpRequest {
    */
   public async createAsync(input: UserCreateDto): Promise<IdentityUserDto> {
     const client = this.getClinet()
-    return await client.post(ApiUrls.User.Default, input)
+    return await client.post(ApiConfig.api.net.basics.users.default, input)
   }
 
   /**
@@ -45,7 +45,7 @@ export class UserHttpRequest extends AuthorizationHttpRequest {
    */
   public async updateAsync(id: string, input: UserUpdateDto): Promise<IdentityUserDto> {
     const client = this.getClinet()
-    return await client.put(ApiUrls.User.Default + '/' + id, input)
+    return await client.put(ApiConfig.api.net.basics.users.default + '/' + id, input)
   }
 
   /**
@@ -55,7 +55,7 @@ export class UserHttpRequest extends AuthorizationHttpRequest {
    */
   public async getAsync(id: string): Promise<IdentityUserDto> {
     const client = this.getClinet()
-    return await client.get(ApiUrls.User.Default + '/' + id)
+    return await client.get(ApiConfig.api.net.basics.users.default + '/' + id)
   }
 
   /**
@@ -65,7 +65,7 @@ export class UserHttpRequest extends AuthorizationHttpRequest {
    */
   public async getDetailAsync(id: string): Promise<IdentityUserDetailDto> {
     const client = this.getClinet()
-    const url = urlFormatString(ApiUrls.User.Detail, id)
+    const url = urlFormatString(ApiConfig.api.net.basics.users.detail, id)
     return await client.get(url)
   }
 
@@ -76,7 +76,7 @@ export class UserHttpRequest extends AuthorizationHttpRequest {
    */
   public async getListAsync(input: FilterInput): Promise<PagedResultDto<IdentityUserDto>> {
     const client = this.getClinet()
-    const url = getUrlParameters(ApiUrls.User.Default, input)
+    const url = getUrlParameters(ApiConfig.api.net.basics.users.default, input)
     return await client.get(url)
   }
 
@@ -87,7 +87,7 @@ export class UserHttpRequest extends AuthorizationHttpRequest {
    */
   public async deleteAsync(id: string): Promise<void> {
     const client = this.getClinet()
-    return await client.delete(ApiUrls.User.Default + '/' + id)
+    return await client.delete(ApiConfig.api.net.basics.users.default + '/' + id)
   }
 
   /**
@@ -97,7 +97,7 @@ export class UserHttpRequest extends AuthorizationHttpRequest {
    */
   public async getRolesAsync(id: string): Promise<IdentityRoleDto[]> {
     const client = this.getClinet()
-    const url = urlFormatString(ApiUrls.User.Roles, id)
+    const url = urlFormatString(ApiConfig.api.net.basics.users.roles, id)
     return await client.get(url)
   }
 
@@ -107,7 +107,7 @@ export class UserHttpRequest extends AuthorizationHttpRequest {
    */
   public async getAssignableRolesAsync(): Promise<SelectDto[]> {
     const client = this.getClinet()
-    return await client.get(ApiUrls.User.RolesAssignable)
+    return await client.get(ApiConfig.api.net.basics.users.rolesAssignable)
   }
 
   /**
@@ -118,7 +118,7 @@ export class UserHttpRequest extends AuthorizationHttpRequest {
    */
   public async updateRolesAsync(id: string, input: IdentityUserUpdateRolesDto): Promise<void> {
     const client = this.getClinet()
-    const url = urlFormatString(ApiUrls.User.Roles, id)
+    const url = urlFormatString(ApiConfig.api.net.basics.users.roles, id)
     return await client.put(url, input)
   }
 
@@ -130,7 +130,7 @@ export class UserHttpRequest extends AuthorizationHttpRequest {
    */
   public async updateAvatarAsync(id: string, input: UserAvatarUpdateDto): Promise<void> {
     const client = this.getClinet()
-    const url = urlFormatString(ApiUrls.User.Avatar, id)
+    const url = urlFormatString(ApiConfig.api.net.basics.users.avatar, id)
     return await client.put(url, input)
   }
 
@@ -143,7 +143,7 @@ export class UserHttpRequest extends AuthorizationHttpRequest {
     input: SearchUserListInputDto
   ): Promise<PagedResultDto<SearchUserOutputDto>> {
     const client = this.getClinet()
-    const url = getUrlParameters(ApiUrls.User.List, input)
+    const url = getUrlParameters(ApiConfig.api.net.basics.users.list, input)
     return await client.get(url)
   }
 
@@ -153,6 +153,6 @@ export class UserHttpRequest extends AuthorizationHttpRequest {
    */
   public async getAllListAsync(): Promise<RoleDto[]> {
     const client = this.getClinet()
-    return await client.get(ApiUrls.User.Roles)
+    return await client.get(ApiConfig.api.net.basics.users.roles)
   }
 }

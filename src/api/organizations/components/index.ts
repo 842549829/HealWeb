@@ -1,5 +1,5 @@
 import { AuthorizationHttpRequest } from '@/http/index'
-import { ApiUrls } from '../../urls/index'
+import ApiConfig from '../../urls/index'
 import type {
   CampusCreateDto,
   CampusDto,
@@ -23,34 +23,40 @@ export class ComponentsHttpRequest {
   }
 
   /**
-   * 获取组织机构列表
+   * 获取院区列表
    * @param input 查询条件
-   * @returns 组织机构列表
+   * @returns 院区列表
    */
   public async getListAsync(input: CampusInput): Promise<PagedResultDto<CampusListDto>> {
     const client = this.getClinet()
-    const url = getUrlParameters(ApiUrls.Organizations.Organization.Default, input)
+    const url = getUrlParameters(ApiConfig.api.net.basics.organizations.campus.default, input)
     return await client.get<PagedResultDto<CampusListDto>>(url)
   }
 
   /**
-   * 创建组织机构
-   * @param input 创建组织机构DTO
-   * @returns 组织机构
+   * 创建院区
+   * @param input 创建院区DTO
+   * @returns 院区
    */
   public async createAsync(input: CampusCreateDto): Promise<CampusDto> {
     const client = this.getClinet()
-    return await client.post<CampusDto>(ApiUrls.Organizations.Campus.Default, input)
+    return await client.post<CampusDto>(
+      ApiConfig.api.net.basics.organizations.campus.default,
+      input
+    )
   }
 
   /**
-   * 更新组织机构
-   * @param id 组织机构id
-   * @param input 更新组织机构DTO
-   * @returns 组织机构
+   * 更新院区
+   * @param id 院区id
+   * @param input 更新院区DTO
+   * @returns 院区
    */
   public async updateAsync(id: string, input: CampusUpdateDto): Promise<CampusDto> {
     const client = this.getClinet()
-    return await client.put<CampusDto>(`${ApiUrls.Organizations.Campus.Default}/${id}`, input)
+    return await client.put<CampusDto>(
+      `${ApiConfig.api.net.basics.organizations.campus.default}/${id}`,
+      input
+    )
   }
 }

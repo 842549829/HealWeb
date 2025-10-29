@@ -1,7 +1,7 @@
 // 导入授权请求的Http请求模块类
 import { AuthorizationHttpRequest } from '@/http/index'
 import type { IdentityRoleDto, RoleCreateDto, RoleUpdateDto } from './type'
-import { ApiUrls } from '../urls/index'
+import ApiConfig from '../urls/index'
 import { FilterInput, PagedResultDto } from '../common/type'
 import { getUrlParameters } from '@/utils/urlSearchParams'
 
@@ -24,7 +24,7 @@ export class RoleHttpRequest {
    */
   public async createAsync(input: RoleCreateDto): Promise<IdentityRoleDto> {
     const client = this.getClinet()
-    return await client.post(ApiUrls.Role.Default, input)
+    return await client.post(ApiConfig.api.net.basics.roles.default, input)
   }
 
   /**
@@ -34,7 +34,7 @@ export class RoleHttpRequest {
    */
   public async deleteAsync(id: string): Promise<void> {
     const client = this.getClinet()
-    return await client.delete(`${ApiUrls.Role.Default}/${id}`)
+    return await client.delete(`${ApiConfig.api.net.basics.roles.default}/${id}`)
   }
 
   /**
@@ -45,7 +45,7 @@ export class RoleHttpRequest {
    */
   public async updateAsync(id: string, input: RoleUpdateDto): Promise<IdentityRoleDto> {
     const client = this.getClinet()
-    return await client.put(`${ApiUrls.Role.Default}/${id}`, input)
+    return await client.put(`${ApiConfig.api.net.basics.roles.default}/${id}`, input)
   }
 
   /**
@@ -55,7 +55,7 @@ export class RoleHttpRequest {
    */
   public async getPermissionsAsync(roleId: string): Promise<string[]> {
     const client = this.getClinet()
-    return await client.get(`${ApiUrls.Role.Permissions}/${roleId}`)
+    return await client.get(`${ApiConfig.api.net.basics.roles.permissions}/${roleId}`)
   }
 
   /**
@@ -65,7 +65,7 @@ export class RoleHttpRequest {
    */
   public async getListAsync(input: FilterInput): Promise<PagedResultDto<IdentityRoleDto>> {
     const client = this.getClinet()
-    const url = getUrlParameters(ApiUrls.Role.Default, input)
+    const url = getUrlParameters(ApiConfig.api.net.basics.roles.default, input)
     return await client.get(url)
   }
 }

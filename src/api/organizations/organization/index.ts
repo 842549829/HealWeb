@@ -1,5 +1,5 @@
 import { AuthorizationHttpRequest } from '@/http/index'
-import { ApiUrls } from '../../urls/index'
+import ApiConfig from '../../urls/index'
 import type {
   GetOrganizationsInput,
   OrganizationCreateDto,
@@ -31,7 +31,7 @@ export class OrganizationsHttpRequest {
     input: GetOrganizationsInput
   ): Promise<PagedResultDto<OrganizationDto>> {
     const client = this.getClinet()
-    const url = getUrlParameters(ApiUrls.Organizations.Organization.Default, input)
+    const url = getUrlParameters(ApiConfig.api.net.basics.organizations.organization.default, input)
     return await client.get<PagedResultDto<OrganizationDto>>(url)
   }
 
@@ -42,7 +42,9 @@ export class OrganizationsHttpRequest {
    */
   public async getAsync(id: string): Promise<OrganizationDto> {
     const client = this.getClinet()
-    return await client.get<OrganizationDto>(`${ApiUrls.Organizations.Organization.Default}/${id}`)
+    return await client.get<OrganizationDto>(
+      `${ApiConfig.api.net.basics.organizations.organization.default}/${id}`
+    )
   }
 
   /**
@@ -56,7 +58,10 @@ export class OrganizationsHttpRequest {
     recursive: boolean = false
   ): Promise<OrganizationDto[]> {
     const client = this.getClinet()
-    const url = getUrlParameters(ApiUrls.Organizations.Organization.Select, { parentId, recursive })
+    const url = getUrlParameters(ApiConfig.api.net.basics.organizations.organization.select, {
+      parentId,
+      recursive
+    })
     return await client.get<OrganizationDto[]>(url)
   }
 
@@ -68,7 +73,9 @@ export class OrganizationsHttpRequest {
    */
   public async getTreeAsync(parentId?: string): Promise<OrganizationTreeDto[]> {
     const client = this.getClinet()
-    const url = getUrlParameters(ApiUrls.Organizations.Organization.Tree, { parentId })
+    const url = getUrlParameters(ApiConfig.api.net.basics.organizations.organization.tree, {
+      parentId
+    })
     return await client.get<OrganizationTreeDto[]>(url)
   }
 
@@ -79,7 +86,10 @@ export class OrganizationsHttpRequest {
    */
   public async createAsync(input: OrganizationCreateDto): Promise<OrganizationDto> {
     const client = this.getClinet()
-    return await client.post<OrganizationDto>(ApiUrls.Organizations.Organization.Default, input)
+    return await client.post<OrganizationDto>(
+      ApiConfig.api.net.basics.organizations.organization.default,
+      input
+    )
   }
 
   /**
@@ -91,7 +101,7 @@ export class OrganizationsHttpRequest {
   public async updateAsync(id: string, input: OrganizationUpdateDto): Promise<OrganizationDto> {
     const client = this.getClinet()
     return await client.put<OrganizationDto>(
-      `${ApiUrls.Organizations.Organization.Default}/${id}`,
+      `${ApiConfig.api.net.basics.organizations.organization.default}/${id}`,
       input
     )
   }
@@ -101,6 +111,8 @@ export class OrganizationsHttpRequest {
    */
   public async deleteAsync(id: string): Promise<void> {
     const client = this.getClinet()
-    return await client.delete(`${ApiUrls.Organizations.Organization.Default}/${id}`)
+    return await client.delete(
+      `${ApiConfig.api.net.basics.organizations.organization.default}/${id}`
+    )
   }
 }

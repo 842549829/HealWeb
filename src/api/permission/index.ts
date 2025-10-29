@@ -1,5 +1,5 @@
 import { AuthorizationHttpRequest } from '@/http/index'
-import { ApiUrls } from '../urls/index'
+import ApiConfig from '../urls/index'
 import type { RolePermissionTreeDto } from './type'
 /**
  * 菜单管理API
@@ -18,7 +18,7 @@ export class PermissionHttpRequest {
    * @returns 角色权限树
    */
   public async getAllRolePermissionTreeListAsync(): Promise<Array<RolePermissionTreeDto>> {
-    const url = ApiUrls.Permissions.RoleList
+    const url = ApiConfig.api.net.basics.permissions.roleList
     const response = await this.getClinet().get<Array<RolePermissionTreeDto>>(url)
     return response
   }
