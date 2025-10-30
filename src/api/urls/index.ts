@@ -102,7 +102,17 @@ const ApiConfig = {
           }
         }
       }
-    }
+    },
+    dict: defineModule('dict', {
+      dictes: {
+        item: {
+          default: false
+        },
+        type: {
+          default: false
+        }
+      }
+    })
   })
 }
 
