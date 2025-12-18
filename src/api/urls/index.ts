@@ -37,7 +37,7 @@ const defineModule = <T extends ApiDefinition>(module: string, apis: T): MappedA
         }
       } else if (typeof value === 'string') {
         const suffix = value
-        result[key] = `${modulePath}/${key}/${suffix}`
+        result[key] = `${modulePath}/${suffix}`
       } else {
         // 递归处理子模块
         result[key] = defineModule(`${module}/${key}`, value)
@@ -57,6 +57,7 @@ const ApiConfig = {
     net: {
       basics: {
         permissions: {
+          default: false,
           moduleList: 'module-list',
           routes: 'routes',
           roleList: 'role-list'
